@@ -1,6 +1,8 @@
 ![Logo](websocket-sharp_logo.png)
 
-## Welcome to websocket-sharp! ##
+## Welcome to a clone of websocket-sharp! ##
+
+This is a port of WebsocketSharp for Net6.0. Fixes bug that causes StackOverflow in Net6.0. The recursive architecture that caused this issue was replaced with StreamThreads coroutines, which has the added benefit that the code becomes somewhat easier to read.
 
 websocket-sharp supports:
 
