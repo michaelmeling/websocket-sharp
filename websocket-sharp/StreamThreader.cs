@@ -62,6 +62,8 @@ namespace WebSocketSharp
                     _stream.Position = 0;
                 }
 
+                socket.IsReceiving = true;
+
                 Stream.BeginRead(buff, 0, buffersize, StreamReader, null);
             }
             catch (ObjectDisposedException)

@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StreamThreads" Version="2022.8.1.100" />
+    <ProjectReference Include="..\..\StreamThreads\StreamThreads\StreamThreads.csproj" />
   </ItemGroup>
 
 </Project>
