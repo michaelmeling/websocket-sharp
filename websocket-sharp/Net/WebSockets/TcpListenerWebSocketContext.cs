@@ -89,6 +89,7 @@ namespace WebSocketSharp.Net.WebSockets
                           sslConfig.ClientCertificateValidationCallback
                         );
 
+        
         sslStream.AuthenticateAsServer (
           sslConfig.ServerCertificate,
           sslConfig.ClientCertificateRequired,
