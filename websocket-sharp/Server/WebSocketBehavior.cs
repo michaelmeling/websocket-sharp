@@ -348,7 +348,7 @@ namespace WebSocketSharp.Server
 
       set {
         if (_websocket != null) {
-          var msg = "The session has already started.";
+                    string msg = "The session has already started.";
 
           throw new InvalidOperationException (msg);
         }
@@ -360,7 +360,7 @@ namespace WebSocketSharp.Server
         }
 
         if (!value.IsToken ()) {
-          var msg = "It is not a token.";
+                    string msg = "It is not a token.";
 
           throw new ArgumentException (msg, "value");
         }
@@ -399,8 +399,8 @@ namespace WebSocketSharp.Server
       }
 
       if (_cookiesValidator != null) {
-        var req = context.CookieCollection;
-        var res = context.WebSocket.CookieCollection;
+                CookieCollection req = context.CookieCollection;
+                CookieCollection res = context.WebSocket.CookieCollection;
 
         if (!_cookiesValidator (req, res))
           return "It includes no cookie or an invalid one.";
@@ -461,7 +461,7 @@ namespace WebSocketSharp.Server
       _websocket.IgnoreExtensions = _ignoreExtensions;
       _websocket.Protocol = _protocol;
 
-      var waitTime = sessions.WaitTime;
+            TimeSpan waitTime = sessions.WaitTime;
 
       if (waitTime != _websocket.WaitTime)
         _websocket.WaitTime = waitTime;
@@ -491,7 +491,7 @@ namespace WebSocketSharp.Server
     protected void Close ()
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+                string msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
@@ -560,7 +560,7 @@ namespace WebSocketSharp.Server
     protected void Close (ushort code, string reason)
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+                string msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
@@ -620,7 +620,7 @@ namespace WebSocketSharp.Server
     protected void Close (CloseStatusCode code, string reason)
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+                string msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
@@ -646,7 +646,7 @@ namespace WebSocketSharp.Server
     protected void CloseAsync ()
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+                string msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
@@ -720,7 +720,7 @@ namespace WebSocketSharp.Server
     protected void CloseAsync (ushort code, string reason)
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+                string msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
@@ -785,7 +785,7 @@ namespace WebSocketSharp.Server
     protected void CloseAsync (CloseStatusCode code, string reason)
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+                string msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
@@ -846,7 +846,7 @@ namespace WebSocketSharp.Server
     protected bool Ping ()
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+                string msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
@@ -882,7 +882,7 @@ namespace WebSocketSharp.Server
     protected bool Ping (string message)
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+                string msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
@@ -905,7 +905,7 @@ namespace WebSocketSharp.Server
     protected void Send (byte[] data)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+                string msg = "The current state of the connection is not Open.";
 
         throw new InvalidOperationException (msg);
       }
@@ -944,7 +944,7 @@ namespace WebSocketSharp.Server
     protected void Send (FileInfo fileInfo)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+                string msg = "The current state of the connection is not Open.";
 
         throw new InvalidOperationException (msg);
       }
@@ -970,7 +970,7 @@ namespace WebSocketSharp.Server
     protected void Send (string data)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+                string msg = "The current state of the connection is not Open.";
 
         throw new InvalidOperationException (msg);
       }
@@ -1019,7 +1019,7 @@ namespace WebSocketSharp.Server
     protected void Send (Stream stream, int length)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+                string msg = "The current state of the connection is not Open.";
 
         throw new InvalidOperationException (msg);
       }
@@ -1059,7 +1059,7 @@ namespace WebSocketSharp.Server
     protected void SendAsync (byte[] data, Action<bool> completed)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+                string msg = "The current state of the connection is not Open.";
 
         throw new InvalidOperationException (msg);
       }
@@ -1115,7 +1115,7 @@ namespace WebSocketSharp.Server
     protected void SendAsync (FileInfo fileInfo, Action<bool> completed)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+                string msg = "The current state of the connection is not Open.";
 
         throw new InvalidOperationException (msg);
       }
@@ -1158,7 +1158,7 @@ namespace WebSocketSharp.Server
     protected void SendAsync (string data, Action<bool> completed)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+                string msg = "The current state of the connection is not Open.";
 
         throw new InvalidOperationException (msg);
       }
@@ -1223,7 +1223,7 @@ namespace WebSocketSharp.Server
     protected void SendAsync (Stream stream, int length, Action<bool> completed)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+                string msg = "The current state of the connection is not Open.";
 
         throw new InvalidOperationException (msg);
       }

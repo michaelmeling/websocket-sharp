@@ -170,8 +170,8 @@ namespace WebSocketSharp.Server
       if (!tryCreateUri (url, out uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      var host = uri.GetDnsSafeHost (true);
-      var addr = host.ToIPAddress ();
+            string host = uri.GetDnsSafeHost (true);
+            System.Net.IPAddress addr = host.ToIPAddress ();
 
       if (addr == null) {
         msg = "The host part could not be converted to an IP address.";
@@ -210,7 +210,7 @@ namespace WebSocketSharp.Server
     public HttpServer (int port, bool secure)
     {
       if (!port.IsPortNumber ()) {
-        var msg = "It is less than 1 or greater than 65535.";
+                string msg = "It is less than 1 or greater than 65535.";
 
         throw new ArgumentOutOfRangeException ("port", msg);
       }
@@ -288,13 +288,13 @@ namespace WebSocketSharp.Server
         throw new ArgumentNullException ("address");
 
       if (!address.IsLocal ()) {
-        var msg = "It is not a local IP address.";
+                string msg = "It is not a local IP address.";
 
         throw new ArgumentException (msg, "address");
       }
 
       if (!port.IsPortNumber ()) {
-        var msg = "It is less than 1 or greater than 65535.";
+                string msg = "It is less than 1 or greater than 65535.";
 
         throw new ArgumentOutOfRangeException ("port", msg);
       }
@@ -616,7 +616,7 @@ namespace WebSocketSharp.Server
     public ServerSslConfiguration SslConfiguration {
       get {
         if (!_secure) {
-          var msg = "The server does not provide secure connections.";
+                    string msg = "The server does not provide secure connections.";
 
           throw new InvalidOperationException (msg);
         }
@@ -797,12 +797,12 @@ namespace WebSocketSharp.Server
     {
       message = null;
 
-      var byUser = _listener.SslConfiguration.ServerCertificate != null;
+            bool byUser = _listener.SslConfiguration.ServerCertificate != null;
 
-      var path = _listener.CertificateFolderPath;
-      var withPort = EndPointListener.CertificateExists (_port, path);
+            string path = _listener.CertificateFolderPath;
+            bool withPort = EndPointListener.CertificateExists (_port, path);
 
-      var either = byUser || withPort;
+            bool either = byUser || withPort;
 
       if (!either) {
         message = "There is no server certificate for secure connection.";
@@ -810,10 +810,10 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      var both = byUser && withPort;
+            bool both = byUser && withPort;
 
       if (both) {
-        var msg = "The server certificate associated with the port is used.";
+                string msg = "The server certificate associated with the port is used.";
 
         _log.Warn (msg);
       }
@@ -825,10 +825,10 @@ namespace WebSocketSharp.Server
       string hostname, int port, bool secure
     )
     {
-      var lsnr = new HttpListener ();
+            HttpListener lsnr = new HttpListener ();
 
-      var schm = secure ? "https" : "http";
-      var pref = String.Format ("{0}://{1}:{2}/", schm, hostname, port);
+            string schm = secure ? "https" : "http";
+            string pref = String.Format ("{0}://{1}:{2}/", schm, hostname, port);
 
       lsnr.Prefixes.Add (pref);
 
@@ -853,8 +853,8 @@ namespace WebSocketSharp.Server
 
     private void processRequest (HttpListenerContext context)
     {
-      var method = context.Request.HttpMethod;
-      var evt = method == "GET"
+            string method = context.Request.HttpMethod;
+            EventHandler<HttpRequestEventArgs> evt = method == "GET"
                 ? OnGet
                 : method == "HEAD"
                   ? OnHead
@@ -879,7 +879,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var e = new HttpRequestEventArgs (context, _docRootPath);
+            HttpRequestEventArgs e = new HttpRequestEventArgs (context, _docRootPath);
       evt (this, e);
 
       context.Response.Close ();
@@ -887,7 +887,7 @@ namespace WebSocketSharp.Server
 
     private void processRequest (HttpListenerWebSocketContext context)
     {
-      var uri = context.RequestUri;
+            Uri uri = context.RequestUri;
 
       if (uri == null) {
         context.Close (HttpStatusCode.BadRequest);
@@ -895,7 +895,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var path = uri.AbsolutePath;
+            string path = uri.AbsolutePath;
 
       if (path.IndexOfAny (new[] { '%', '+' }) > -1)
         path = HttpUtility.UrlDecode (path, Encoding.UTF8);
@@ -1014,12 +1014,12 @@ namespace WebSocketSharp.Server
         _listener.Start ();
       }
       catch (Exception ex) {
-        var msg = "The underlying listener has failed to start.";
+                string msg = "The underlying listener has failed to start.";
 
         throw new InvalidOperationException (msg, ex);
       }
 
-      var receiver = new ThreadStart (receiveRequest);
+            ThreadStart receiver = new ThreadStart (receiveRequest);
       _receiveThread = new Thread (receiver);
       _receiveThread.IsBackground = true;
 
@@ -1067,7 +1067,7 @@ namespace WebSocketSharp.Server
       result = null;
       message = null;
 
-      var uri = uriString.ToUri ();
+            Uri uri = uriString.ToUri ();
 
       if (uri == null) {
         message = "An invalid URI string.";
@@ -1081,8 +1081,8 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      var schm = uri.Scheme;
-      var http = schm == "http" || schm == "https";
+            string schm = uri.Scheme;
+            bool http = schm == "http" || schm == "https";
 
       if (!http) {
         message = "The scheme part is not 'http' or 'https'.";

@@ -210,7 +210,7 @@ namespace WebSocketSharp.Net
     {
       _response.StatusCode = 401;
 
-      var chal = new AuthenticationChallenge (scheme, realm).ToString ();
+            string chal = new AuthenticationChallenge (scheme, realm).ToString ();
       _response.Headers.InternalSet ("WWW-Authenticate", chal, true);
 
       _response.Close ();
@@ -222,14 +222,14 @@ namespace WebSocketSharp.Net
         _response.StatusCode = _errorStatusCode;
         _response.ContentType = "text/html";
 
-        var content = createErrorContent (
+                string content = createErrorContent (
                         _errorStatusCode,
                         _response.StatusDescription,
                         _errorMessage
                       );
 
-        var enc = Encoding.UTF8;
-        var entity = enc.GetBytes (content);
+                Encoding enc = Encoding.UTF8;
+                byte[] entity = enc.GetBytes (content);
 
         _response.ContentEncoding = enc;
         _response.ContentLength64 = entity.LongLength;
@@ -262,7 +262,7 @@ namespace WebSocketSharp.Net
       Func<IIdentity, NetworkCredential> credentialsFinder
     )
     {
-      var user = HttpUtility.CreateUser (
+            IPrincipal user = HttpUtility.CreateUser (
                    _request.Headers["Authorization"],
                    scheme,
                    realm,
@@ -321,20 +321,20 @@ namespace WebSocketSharp.Net
     public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
     {
       if (_websocketContext != null) {
-        var msg = "The accepting is already in progress.";
+                string msg = "The accepting is already in progress.";
 
         throw new InvalidOperationException (msg);
       }
 
       if (protocol != null) {
         if (protocol.Length == 0) {
-          var msg = "An empty string.";
+                    string msg = "An empty string.";
 
           throw new ArgumentException (msg, "protocol");
         }
 
         if (!protocol.IsToken ()) {
-          var msg = "It contains an invalid character.";
+                    string msg = "It contains an invalid character.";
 
           throw new ArgumentException (msg, "protocol");
         }

@@ -88,11 +88,11 @@ namespace WebSocketSharp.Net
 
     internal static AuthenticationChallenge Parse (string value)
     {
-      var chal = value.Split (new[] { ' ' }, 2);
+            string[] chal = value.Split (new[] { ' ' }, 2);
       if (chal.Length != 2)
         return null;
 
-      var schm = chal[0].ToLower ();
+            string schm = chal[0].ToLower ();
       return schm == "basic"
              ? new AuthenticationChallenge (
                  AuthenticationSchemes.Basic, ParseParameters (chal[1]))
@@ -109,9 +109,9 @@ namespace WebSocketSharp.Net
 
     internal override string ToDigestString ()
     {
-      var output = new StringBuilder (128);
+            StringBuilder output = new StringBuilder (128);
 
-      var domain = Parameters["domain"];
+            string domain = Parameters["domain"];
       if (domain != null)
         output.AppendFormat (
           "Digest realm=\"{0}\", domain=\"{1}\", nonce=\"{2}\"",
@@ -122,19 +122,19 @@ namespace WebSocketSharp.Net
         output.AppendFormat (
           "Digest realm=\"{0}\", nonce=\"{1}\"", Parameters["realm"], Parameters["nonce"]);
 
-      var opaque = Parameters["opaque"];
+            string opaque = Parameters["opaque"];
       if (opaque != null)
         output.AppendFormat (", opaque=\"{0}\"", opaque);
 
-      var stale = Parameters["stale"];
+            string stale = Parameters["stale"];
       if (stale != null)
         output.AppendFormat (", stale={0}", stale);
 
-      var algo = Parameters["algorithm"];
+            string algo = Parameters["algorithm"];
       if (algo != null)
         output.AppendFormat (", algorithm={0}", algo);
 
-      var qop = Parameters["qop"];
+            string qop = Parameters["qop"];
       if (qop != null)
         output.AppendFormat (", qop=\"{0}\"", qop);
 

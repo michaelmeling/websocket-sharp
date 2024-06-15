@@ -93,8 +93,8 @@ namespace WebSocketSharp.Net
 
     internal byte[] RemainingBuffer {
       get {
-        using (var buff = new MemoryStream ()) {
-          var cnt = _decoder.Count;
+        using (MemoryStream buff = new MemoryStream ()) {
+                    int cnt = _decoder.Count;
 
           if (cnt > 0)
             buff.Write (_decoder.EndBuffer, _decoder.Offset, cnt);
@@ -117,11 +117,11 @@ namespace WebSocketSharp.Net
 
     private void onRead (IAsyncResult asyncResult)
     {
-      var rstate = (ReadBufferState) asyncResult.AsyncState;
-      var ares = rstate.AsyncResult;
+            ReadBufferState rstate = (ReadBufferState) asyncResult.AsyncState;
+            HttpStreamAsyncResult ares = rstate.AsyncResult;
 
       try {
-        var nread = base.EndRead (asyncResult);
+                int nread = base.EndRead (asyncResult);
 
         _decoder.Write (ares.Buffer, ares.Offset, nread);
         nread = _decoder.Read (rstate.Buffer, rstate.Offset, rstate.Count);
@@ -157,7 +157,7 @@ namespace WebSocketSharp.Net
     )
     {
       if (_disposed) {
-        var name = GetType ().ToString ();
+                string name = GetType ().ToString ();
 
         throw new ObjectDisposedException (name);
       }
@@ -166,26 +166,26 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("buffer");
 
       if (offset < 0) {
-        var msg = "A negative value.";
+                string msg = "A negative value.";
 
         throw new ArgumentOutOfRangeException ("offset", msg);
       }
 
       if (count < 0) {
-        var msg = "A negative value.";
+                string msg = "A negative value.";
 
         throw new ArgumentOutOfRangeException ("count", msg);
       }
 
-      var len = buffer.Length;
+            int len = buffer.Length;
 
       if (offset + count > len) {
-        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
+                string msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
 
         throw new ArgumentException (msg);
       }
 
-      var ares = new HttpStreamAsyncResult (callback, state);
+            HttpStreamAsyncResult ares = new HttpStreamAsyncResult (callback, state);
 
       if (_noMoreData) {
         ares.Complete ();
@@ -193,7 +193,7 @@ namespace WebSocketSharp.Net
         return ares;
       }
 
-      var nread = _decoder.Read (buffer, offset, count);
+            int nread = _decoder.Read (buffer, offset, count);
 
       offset += nread;
       count -= nread;
@@ -218,7 +218,7 @@ namespace WebSocketSharp.Net
       ares.Offset = 0;
       ares.Count = _bufferLength;
 
-      var rstate = new ReadBufferState (buffer, offset, count, ares);
+            ReadBufferState rstate = new ReadBufferState (buffer, offset, count, ares);
       rstate.InitialCount += nread;
 
       base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
@@ -239,7 +239,7 @@ namespace WebSocketSharp.Net
     public override int EndRead (IAsyncResult asyncResult)
     {
       if (_disposed) {
-        var name = GetType ().ToString ();
+                string name = GetType ().ToString ();
 
         throw new ObjectDisposedException (name);
       }
@@ -247,10 +247,10 @@ namespace WebSocketSharp.Net
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
 
-      var ares = asyncResult as HttpStreamAsyncResult;
+            HttpStreamAsyncResult ares = asyncResult as HttpStreamAsyncResult;
 
       if (ares == null) {
-        var msg = "A wrong IAsyncResult instance.";
+                string msg = "A wrong IAsyncResult instance.";
 
         throw new ArgumentException (msg, "asyncResult");
       }
@@ -259,7 +259,7 @@ namespace WebSocketSharp.Net
         ares.AsyncWaitHandle.WaitOne ();
 
       if (ares.HasException) {
-        var msg = "The I/O operation has been aborted.";
+                string msg = "The I/O operation has been aborted.";
 
         throw new HttpListenerException (995, msg);
       }
@@ -269,7 +269,7 @@ namespace WebSocketSharp.Net
 
     public override int Read (byte[] buffer, int offset, int count)
     {
-      var ares = BeginRead (buffer, offset, count, null, null);
+            IAsyncResult ares = BeginRead (buffer, offset, count, null, null);
 
       return EndRead (ares);
     }

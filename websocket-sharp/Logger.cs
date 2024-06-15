@@ -189,7 +189,7 @@ namespace WebSocketSharp
 
     private static void defaultOutput (LogData data, string path)
     {
-      var log = data.ToString ();
+            string log = data.ToString ();
       Console.WriteLine (log);
       if (path != null && path.Length > 0)
         writeToFile (log, path);
@@ -215,8 +215,8 @@ namespace WebSocketSharp
 
     private static void writeToFile (string value, string path)
     {
-      using (var writer = new StreamWriter (path, true))
-      using (var syncWriter = TextWriter.Synchronized (writer))
+      using (StreamWriter writer = new StreamWriter (path, true))
+      using (TextWriter syncWriter = TextWriter.Synchronized (writer))
         syncWriter.WriteLine (value);
     }
 

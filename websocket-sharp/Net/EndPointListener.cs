@@ -98,14 +98,14 @@ namespace WebSocketSharp.Net
       _endpoint = endpoint;
 
       if (secure) {
-        var cert = getCertificate (
+                X509Certificate2 cert = getCertificate (
                      endpoint.Port,
                      certificateFolderPath,
                      sslConfig.ServerCertificate
                    );
 
         if (cert == null) {
-          var msg = "No server certificate could be found.";
+                    string msg = "No server certificate could be found.";
 
           throw new ArgumentException (msg);
         }
@@ -174,11 +174,11 @@ namespace WebSocketSharp.Net
       List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix
     )
     {
-      var path = prefix.Path;
+            string path = prefix.Path;
 
-      foreach (var pref in prefixes) {
+      foreach (HttpListenerPrefix pref in prefixes) {
         if (pref.Path == path) {
-          var msg = "The prefix is already in use.";
+                    string msg = "The prefix is already in use.";
 
           throw new HttpListenerException (87, msg);
         }
@@ -192,28 +192,28 @@ namespace WebSocketSharp.Net
       HttpConnection[] conns = null;
 
       lock (_connectionsSync) {
-        var cnt = _connections.Count;
+                int cnt = _connections.Count;
 
         if (cnt == 0)
           return;
 
         conns = new HttpConnection[cnt];
 
-        var vals = _connections.Values;
+                Dictionary<HttpConnection, HttpConnection>.ValueCollection vals = _connections.Values;
         vals.CopyTo (conns, 0);
 
         _connections.Clear ();
       }
 
-      foreach (var conn in conns)
+      foreach (HttpConnection conn in conns)
         conn.Close (true);
     }
 
     private static RSACryptoServiceProvider createRSAFromFile (string path)
     {
-      var rsa = new RSACryptoServiceProvider ();
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider ();
 
-      var key = File.ReadAllBytes (path);
+            byte[] key = File.ReadAllBytes (path);
       rsa.ImportCspBlob (key);
 
       return rsa;
@@ -227,11 +227,11 @@ namespace WebSocketSharp.Net
         folderPath = _defaultCertFolderPath;
 
       try {
-        var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
-        var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
+                string cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
+                string key = Path.Combine (folderPath, String.Format ("{0}.key", port));
 
         if (File.Exists (cer) && File.Exists (key)) {
-          var cert = new X509Certificate2 (cer);
+                    X509Certificate2 cert = new X509Certificate2 (cer);
           cert.PrivateKey = createRSAFromFile (key);
 
           return cert;
@@ -248,7 +248,7 @@ namespace WebSocketSharp.Net
       if (_prefixes.Count > 0)
         return;
 
-      var prefs = _unhandled;
+            List<HttpListenerPrefix> prefs = _unhandled;
 
       if (prefs != null && prefs.Count > 0)
         return;
@@ -263,7 +263,7 @@ namespace WebSocketSharp.Net
 
     private static void onAccept (IAsyncResult asyncResult)
     {
-      var lsnr = (EndPointListener) asyncResult.AsyncState;
+            EndPointListener lsnr = (EndPointListener) asyncResult.AsyncState;
 
       Socket sock = null;
 
@@ -322,10 +322,10 @@ namespace WebSocketSharp.Net
       List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix
     )
     {
-      var path = prefix.Path;
-      var cnt = prefixes.Count;
+            string path = prefix.Path;
+            int cnt = prefixes.Count;
 
-      for (var i = 0; i < cnt; i++) {
+      for (int i = 0; i < cnt; i++) {
         if (prefixes[i].Path == path) {
           prefixes.RemoveAt (i);
 
@@ -345,11 +345,11 @@ namespace WebSocketSharp.Net
 
       HttpListener ret = null;
 
-      var bestLen = -1;
+            int bestLen = -1;
 
-      foreach (var pref in prefixes) {
-        var prefPath = pref.Path;
-        var len = prefPath.Length;
+      foreach (HttpListenerPrefix pref in prefixes) {
+                string prefPath = pref.Path;
+                int len = prefPath.Length;
 
         if (len < bestLen)
           continue;
@@ -372,8 +372,8 @@ namespace WebSocketSharp.Net
       if (folderPath == null || folderPath.Length == 0)
         folderPath = _defaultCertFolderPath;
 
-      var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
-      var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
+            string cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
+            string key = Path.Combine (folderPath, String.Format ("{0}.key", port));
 
       return File.Exists (cer) && File.Exists (key);
     }
@@ -391,22 +391,22 @@ namespace WebSocketSharp.Net
       if (uri == null)
         return false;
 
-      var host = uri.Host;
-      var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
-      var port = uri.Port.ToString ();
-      var path = HttpUtility.UrlDecode (uri.AbsolutePath);
+            string host = uri.Host;
+            bool dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
+            string port = uri.Port.ToString ();
+            string path = HttpUtility.UrlDecode (uri.AbsolutePath);
 
       if (path[path.Length - 1] != '/')
         path += "/";
 
       if (host != null && host.Length > 0) {
-        var prefs = _prefixes;
-        var bestLen = -1;
+                List<HttpListenerPrefix> prefs = _prefixes;
+                int bestLen = -1;
 
-        foreach (var pref in prefs) {
+        foreach (HttpListenerPrefix pref in prefs) {
           if (dns) {
-            var prefHost = pref.Host;
-            var prefDns = Uri.CheckHostName (prefHost) == UriHostNameType.Dns;
+                        string prefHost = pref.Host;
+                        bool prefDns = Uri.CheckHostName (prefHost) == UriHostNameType.Dns;
 
             if (prefDns) {
               if (prefHost != host)
@@ -417,8 +417,8 @@ namespace WebSocketSharp.Net
           if (pref.Port != port)
             continue;
 
-          var prefPath = pref.Path;
-          var len = prefPath.Length;
+                    string prefPath = pref.Path;
+                    int len = prefPath.Length;
 
           if (len < bestLen)
             continue;
@@ -485,11 +485,11 @@ namespace WebSocketSharp.Net
 
       do {
         current = _prefixes;
-        var idx = current.IndexOf (prefix);
+                int idx = current.IndexOf (prefix);
 
         if (idx > -1) {
           if (current[idx].Listener != prefix.Listener) {
-            var msg = String.Format (
+                        string msg = String.Format (
                         "There is another listener for {0}.", prefix
                       );
 

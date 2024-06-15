@@ -47,7 +47,7 @@ namespace WebSocketSharp
                 int len = Stream.EndRead(at);
                 if (len == 0) return;
 
-                var oldpos = _stream.Position;
+                long oldpos = _stream.Position;
                 _stream.Position = _stream.Length;
                 _stream.WriteBytes(buff.SubArray(0, len), len);
                 _stream.Position = oldpos;
@@ -56,7 +56,7 @@ namespace WebSocketSharp
 
                 if (_stream.Position != 0)
                 {
-                    var oldstream = _stream;
+                    MemoryStream oldstream = _stream;
                     _stream.CopyTo(_stream = new MemoryStream());
                     oldstream.Dispose();
                     _stream.Position = 0;
@@ -100,9 +100,9 @@ namespace WebSocketSharp
             while (true)
             {
 
-                yield return ReadStream(2).Await(out var header);
+                yield return ReadStream(2).Await(out IteratorReturnVariable<byte[]> header);
 
-                var frame = WebSocketFrame.processHeader(header);
+                WebSocketFrame frame = WebSocketFrame.processHeader(header);
 
                 yield return ReadExtendedPayloadLength(frame).Await();
 
@@ -138,14 +138,14 @@ namespace WebSocketSharp
 
         private IEnumerable<StreamState> ReadExtendedPayloadLength(WebSocketFrame frame)
         {
-            var len = frame.ExtendedPayloadLengthWidth;
+            int len = frame.ExtendedPayloadLengthWidth;
             if (len == 0)
             {
                 frame._extPayloadLength = WebSocket.EmptyBytes;
                 yield break;
             }
 
-            yield return ReadStream(len).Await(out var bytes);
+            yield return ReadStream(len).Await(out IteratorReturnVariable<byte[]> bytes);
 
             if (bytes.Value.Length != len)
                 throw new WebSocketException("The extended payload length of a frame cannot be read from the stream.");
@@ -155,14 +155,14 @@ namespace WebSocketSharp
 
         private IEnumerable<StreamState> ReadMaskingKey(WebSocketFrame frame)
         {
-            var len = frame.IsMasked ? 4 : 0;
+            int len = frame.IsMasked ? 4 : 0;
             if (len == 0)
             {
                 frame._maskingKey = WebSocket.EmptyBytes;
                 yield break;
             }
 
-            yield return ReadStream(len).Await(out var bytes);
+            yield return ReadStream(len).Await(out IteratorReturnVariable<byte[]> bytes);
 
             if (bytes.Value.Length != len)
                 throw new WebSocketException("The masking key of a frame cannot be read from the stream.");
@@ -172,7 +172,7 @@ namespace WebSocketSharp
 
         private IEnumerable<StreamState> ReadPayloadData(WebSocketFrame frame)
         {
-            var exactLen = frame.ExactPayloadLength;
+            ulong exactLen = frame.ExactPayloadLength;
 
             if (exactLen > PayloadData.MaxLength)
                 throw new WebSocketException(CloseStatusCode.TooBig, "A frame has too long payload length.");
@@ -183,7 +183,7 @@ namespace WebSocketSharp
                 yield break;
             }
 
-            yield return ReadStream((int)exactLen).Await(out var bytes);
+            yield return ReadStream((int)exactLen).Await(out IteratorReturnVariable<byte[]> bytes);
 
             if (bytes.Value.Length != (int)exactLen)
                 throw new WebSocketException("The payload data of a frame cannot be read from the stream.");

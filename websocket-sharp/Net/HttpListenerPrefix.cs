@@ -128,11 +128,11 @@ namespace WebSocketSharp.Net
       if (uriPrefix.StartsWith ("https"))
         _secure = true;
 
-      var len = uriPrefix.Length;
-      var host = uriPrefix.IndexOf (':') + 3;
-      var root = uriPrefix.IndexOf ('/', host + 1, len - host - 1);
+            int len = uriPrefix.Length;
+            int host = uriPrefix.IndexOf (':') + 3;
+            int root = uriPrefix.IndexOf ('/', host + 1, len - host - 1);
 
-      var colon = uriPrefix.LastIndexOf (':', root - 1, root - host - 1);
+            int colon = uriPrefix.LastIndexOf (':', root - 1, root - host - 1);
 
       if (uriPrefix[root - 1] != ']' && colon > host) {
         _host = uriPrefix.Substring (host, colon - host);
@@ -163,61 +163,61 @@ namespace WebSocketSharp.Net
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
 
-      var len = uriPrefix.Length;
+            int len = uriPrefix.Length;
 
       if (len == 0) {
-        var msg = "An empty string.";
+                string msg = "An empty string.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      var schm = uriPrefix.StartsWith ("http://")
+            bool schm = uriPrefix.StartsWith ("http://")
                  || uriPrefix.StartsWith ("https://");
 
       if (!schm) {
-        var msg = "The scheme is not 'http' or 'https'.";
+                string msg = "The scheme is not 'http' or 'https'.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      var end = len - 1;
+            int end = len - 1;
 
       if (uriPrefix[end] != '/') {
-        var msg = "It ends without '/'.";
+                string msg = "It ends without '/'.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      var host = uriPrefix.IndexOf (':') + 3;
+            int host = uriPrefix.IndexOf (':') + 3;
 
       if (host >= end) {
-        var msg = "No host is specified.";
+                string msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
       if (uriPrefix[host] == ':') {
-        var msg = "No host is specified.";
+                string msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      var root = uriPrefix.IndexOf ('/', host, len - host);
+            int root = uriPrefix.IndexOf ('/', host, len - host);
 
       if (root == host) {
-        var msg = "No host is specified.";
+                string msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
       if (uriPrefix[root - 1] == ':') {
-        var msg = "No port is specified.";
+                string msg = "No port is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
       if (root == end - 1) {
-        var msg = "No path is specified.";
+                string msg = "No path is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
@@ -244,7 +244,7 @@ namespace WebSocketSharp.Net
     /// </returns>
     public override bool Equals (object obj)
     {
-      var pref = obj as HttpListenerPrefix;
+            HttpListenerPrefix pref = obj as HttpListenerPrefix;
 
       return pref != null && _prefix.Equals (pref._prefix);
     }

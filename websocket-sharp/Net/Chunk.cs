@@ -73,7 +73,7 @@ namespace WebSocketSharp.Net
 
     public int Read (byte[] buffer, int offset, int count)
     {
-      var left = _data.Length - _offset;
+            int left = _data.Length - _offset;
 
       if (left == 0)
         return 0;

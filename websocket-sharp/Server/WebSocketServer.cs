@@ -101,7 +101,7 @@ namespace WebSocketSharp.Server
     /// </remarks>
     public WebSocketServer ()
     {
-      var addr = System.Net.IPAddress.Any;
+            System.Net.IPAddress addr = System.Net.IPAddress.Any;
 
       init (addr.ToString (), addr, 80, false);
     }
@@ -181,8 +181,8 @@ namespace WebSocketSharp.Server
       if (!tryCreateUri (url, out uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      var host = uri.DnsSafeHost;
-      var addr = host.ToIPAddress ();
+            string host = uri.DnsSafeHost;
+            System.Net.IPAddress addr = host.ToIPAddress ();
 
       if (addr == null) {
         msg = "The host part could not be converted to an IP address.";
@@ -221,12 +221,12 @@ namespace WebSocketSharp.Server
     public WebSocketServer (int port, bool secure)
     {
       if (!port.IsPortNumber ()) {
-        var msg = "It is less than 1 or greater than 65535.";
+                string msg = "It is less than 1 or greater than 65535.";
 
         throw new ArgumentOutOfRangeException ("port", msg);
       }
 
-      var addr = System.Net.IPAddress.Any;
+            System.Net.IPAddress addr = System.Net.IPAddress.Any;
 
       init (addr.ToString (), addr, port, secure);
     }
@@ -301,13 +301,13 @@ namespace WebSocketSharp.Server
         throw new ArgumentNullException ("address");
 
       if (!address.IsLocal ()) {
-        var msg = "It is not a local IP address.";
+                string msg = "It is not a local IP address.";
 
         throw new ArgumentException (msg, "address");
       }
 
       if (!port.IsPortNumber ()) {
-        var msg = "It is less than 1 or greater than 65535.";
+                string msg = "It is less than 1 or greater than 65535.";
 
         throw new ArgumentOutOfRangeException ("port", msg);
       }
@@ -571,7 +571,7 @@ namespace WebSocketSharp.Server
     public ServerSslConfiguration SslConfiguration {
       get {
         if (!_secure) {
-          var msg = "The server does not provide secure connections.";
+                    string msg = "The server does not provide secure connections.";
 
           throw new InvalidOperationException (msg);
         }
@@ -707,10 +707,10 @@ namespace WebSocketSharp.Server
       if (_authSchemes == AuthenticationSchemes.None)
         return false;
 
-      var chal = new AuthenticationChallenge (_authSchemes, _realmInUse)
+            string chal = new AuthenticationChallenge (_authSchemes, _realmInUse)
                  .ToString ();
 
-      var retry = -1;
+            int retry = -1;
       Func<bool> auth = null;
       auth =
         () => {
@@ -744,7 +744,7 @@ namespace WebSocketSharp.Server
 
     private string getRealm ()
     {
-      var realm = _realm;
+            string realm = _realm;
 
       return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
@@ -782,7 +782,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var uri = context.RequestUri;
+            Uri uri = context.RequestUri;
 
       if (uri == null) {
         context.Close (HttpStatusCode.BadRequest);
@@ -804,7 +804,7 @@ namespace WebSocketSharp.Server
         }
       }
 
-      var path = uri.AbsolutePath;
+            string path = uri.AbsolutePath;
 
       if (path.IndexOfAny (new[] { '%', '+' }) > -1)
         path = HttpUtility.UrlDecode (path, Encoding.UTF8);
@@ -831,7 +831,7 @@ namespace WebSocketSharp.Server
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
-                var ctx = new TcpListenerWebSocketContext (
+                    TcpListenerWebSocketContext ctx = new TcpListenerWebSocketContext (
                             cl, null, _secure, _sslConfigInUse, _log
                           );
 
@@ -894,11 +894,11 @@ namespace WebSocketSharp.Server
           return;
 
         if (_secure) {
-          var src = getSslConfiguration ();
-          var conf = new ServerSslConfiguration (src);
+                    ServerSslConfiguration src = getSslConfiguration ();
+                    ServerSslConfiguration conf = new ServerSslConfiguration (src);
 
           if (conf.ServerCertificate == null) {
-            var msg = "There is no server certificate for secure connection.";
+                        string msg = "There is no server certificate for secure connection.";
 
             throw new InvalidOperationException (msg);
           }
@@ -935,12 +935,12 @@ namespace WebSocketSharp.Server
         _listener.Start ();
       }
       catch (Exception ex) {
-        var msg = "The underlying listener has failed to start.";
+                string msg = "The underlying listener has failed to start.";
 
         throw new InvalidOperationException (msg, ex);
       }
 
-      var receiver = new ThreadStart (receiveRequest);
+            ThreadStart receiver = new ThreadStart (receiveRequest);
       _receiveThread = new Thread (receiver);
       _receiveThread.IsBackground = true;
 

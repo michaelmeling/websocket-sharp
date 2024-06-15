@@ -71,7 +71,7 @@ namespace WebSocketSharp.Server
         return () => new TBehavior ();
 
       return () => {
-               var ret = new TBehavior ();
+               TBehavior ret = new TBehavior ();
 
                initializer (ret);
 

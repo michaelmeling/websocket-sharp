@@ -103,11 +103,11 @@ namespace WebSocketSharp.Net
       _socket = socket;
       _endPointListener = listener;
 
-      var netStream = new NetworkStream (socket, false);
+            NetworkStream netStream = new NetworkStream (socket, false);
 
       if (listener.IsSecure) {
-        var sslConf = listener.SslConfiguration;
-        var sslStream = new SslStream (
+                ServerSslConfiguration sslConf = listener.SslConfiguration;
+                SslStream sslStream = new SslStream (
                           netStream,
                           false,
                           sslConf.ClientCertificateValidationCallback
@@ -221,13 +221,13 @@ namespace WebSocketSharp.Net
       RequestStream inputStream
     )
     {
-      var ret = new MemoryStream ();
+            MemoryStream ret = new MemoryStream ();
 
       if (inputStream is ChunkedRequestStream) {
-        var crs = (ChunkedRequestStream) inputStream;
+                ChunkedRequestStream crs = (ChunkedRequestStream) inputStream;
 
         if (crs.HasRemainingBuffer) {
-          var buff = crs.RemainingBuffer;
+                    byte[] buff = crs.RemainingBuffer;
 
           ret.Write (buff, 0, buff.Length);
         }
@@ -235,7 +235,7 @@ namespace WebSocketSharp.Net
         return ret;
       }
 
-      var cnt = inputStream.Count;
+            int cnt = inputStream.Count;
 
       if (cnt > 0)
         ret.Write (inputStream.InitialBuffer, inputStream.Offset, cnt);
@@ -295,8 +295,8 @@ namespace WebSocketSharp.Net
 
     private static void onRead (IAsyncResult asyncResult)
     {
-      var conn = (HttpConnection) asyncResult.AsyncState;
-      var current = conn._attempts;
+            HttpConnection conn = (HttpConnection) asyncResult.AsyncState;
+            int current = conn._attempts;
 
       if (conn._socket == null)
         return;
@@ -308,7 +308,7 @@ namespace WebSocketSharp.Net
         conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
         conn._timeoutCanceled[current] = true;
 
-        var nread = 0;
+                int nread = 0;
 
         try {
           nread = conn._stream.EndRead (asyncResult);
@@ -338,8 +338,8 @@ namespace WebSocketSharp.Net
 
     private static void onTimeout (object state)
     {
-      var conn = (HttpConnection) state;
-      var current = conn._attempts;
+            HttpConnection conn = (HttpConnection) state;
+            int current = conn._attempts;
 
       if (conn._socket == null)
         return;
@@ -357,16 +357,16 @@ namespace WebSocketSharp.Net
 
     private bool processInput (byte[] data, int length)
     {
-      // This method returns a bool:
-      // - true  Done processing
-      // - false Need more input
+            // This method returns a bool:
+            // - true  Done processing
+            // - false Need more input
 
-      var req = _context.Request;
+            HttpListenerRequest req = _context.Request;
 
       try {
         while (true) {
           int nread;
-          var line = readLineFrom (data, _position, length, out nread);
+                    string line = readLineFrom (data, _position, length, out nread);
 
           _position += nread;
 
@@ -415,17 +415,17 @@ namespace WebSocketSharp.Net
 
     private bool processRequestBuffer ()
     {
-      // This method returns a bool:
-      // - true  Done processing
-      // - false Need more write
+            // This method returns a bool:
+            // - true  Done processing
+            // - false Need more write
 
-      var data = _requestBuffer.GetBuffer ();
-      var len = (int) _requestBuffer.Length;
+            byte[] data = _requestBuffer.GetBuffer ();
+            int len = (int) _requestBuffer.Length;
 
       if (!processInput (data, len))
         return false;
 
-      var req = _context.Request;
+            HttpListenerRequest req = _context.Request;
 
       if (!_context.HasErrorMessage)
         req.FinishInitialization ();
@@ -436,7 +436,7 @@ namespace WebSocketSharp.Net
         return true;
       }
 
-      var uri = req.Url;
+            Uri uri = req.Url;
       HttpListener httplsnr;
 
       if (!_endPointListener.TrySearchHttpListener (uri, out httplsnr)) {
@@ -456,10 +456,10 @@ namespace WebSocketSharp.Net
     {
       nread = 0;
 
-      for (var i = offset; i < length; i++) {
+      for (int i = offset; i < length; i++) {
         nread++;
 
-        var b = buffer[i];
+                byte b = buffer[i];
 
         if (b == 13) {
           _lineState = LineState.Cr;
@@ -479,7 +479,7 @@ namespace WebSocketSharp.Net
       if (_lineState != LineState.Lf)
         return null;
 
-      var ret = _currentLine.ToString ();
+            string ret = _currentLine.ToString ();
 
       _currentLine.Length = 0;
       _lineState = LineState.None;
@@ -492,11 +492,11 @@ namespace WebSocketSharp.Net
       if (_inputStream != null)
         return createRequestBuffer (_inputStream);
 
-      var ret = new MemoryStream ();
+            MemoryStream ret = new MemoryStream ();
 
-      var buff = _requestBuffer.GetBuffer ();
-      var len = (int) _requestBuffer.Length;
-      var cnt = len - _position;
+            byte[] buff = _requestBuffer.GetBuffer ();
+            int len = (int) _requestBuffer.Length;
+            int cnt = len - _position;
 
       if (cnt > 0)
         ret.Write (buff, _position, cnt);
@@ -563,8 +563,8 @@ namespace WebSocketSharp.Net
 
         _reuses++;
 
-        var buff = takeOverRequestBuffer ();
-        var len = buff.Length;
+                MemoryStream buff = takeOverRequestBuffer ();
+                long len = buff.Length;
 
         init (buff, 15000);
 
@@ -595,9 +595,9 @@ namespace WebSocketSharp.Net
         if (_inputStream != null)
           return _inputStream;
 
-        var buff = _requestBuffer.GetBuffer ();
-        var len = (int) _requestBuffer.Length;
-        var cnt = len - _position;
+                byte[] buff = _requestBuffer.GetBuffer ();
+                int len = (int) _requestBuffer.Length;
+                int cnt = len - _position;
 
         _inputStream = chunked
                        ? new ChunkedRequestStream (
@@ -622,8 +622,8 @@ namespace WebSocketSharp.Net
         if (_outputStream != null)
           return _outputStream;
 
-        var lsnr = _context.Listener;
-        var ignore = lsnr != null ? lsnr.IgnoreWriteExceptions : true;
+                HttpListener lsnr = _context.Listener;
+                bool ignore = lsnr != null ? lsnr.IgnoreWriteExceptions : true;
 
         _outputStream = new ResponseStream (_stream, _context.Response, ignore);
 

@@ -106,7 +106,7 @@ namespace WebSocketSharp
 
     public bool CloseConnection {
       get {
-        var compType = StringComparison.OrdinalIgnoreCase;
+                StringComparison compType = StringComparison.OrdinalIgnoreCase;
 
         return Headers.Contains ("Connection", "close", compType);
       }
@@ -174,7 +174,7 @@ namespace WebSocketSharp
 
     internal static HttpResponse CreateCloseResponse (HttpStatusCode code)
     {
-      var ret = new HttpResponse (code);
+            HttpResponse ret = new HttpResponse (code);
 
       ret.Headers["Connection"] = "close";
 
@@ -183,7 +183,7 @@ namespace WebSocketSharp
 
     internal static HttpResponse CreateUnauthorizedResponse (string challenge)
     {
-      var ret = new HttpResponse (HttpStatusCode.Unauthorized);
+            HttpResponse ret = new HttpResponse (HttpStatusCode.Unauthorized);
 
       ret.Headers["WWW-Authenticate"] = challenge;
 
@@ -192,9 +192,9 @@ namespace WebSocketSharp
 
     internal static HttpResponse CreateWebSocketHandshakeResponse ()
     {
-      var ret = new HttpResponse (HttpStatusCode.SwitchingProtocols);
+            HttpResponse ret = new HttpResponse (HttpStatusCode.SwitchingProtocols);
 
-      var headers = ret.Headers;
+            NameValueCollection headers = ret.Headers;
 
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
@@ -204,30 +204,30 @@ namespace WebSocketSharp
 
     internal static HttpResponse Parse (string[] messageHeader)
     {
-      var len = messageHeader.Length;
+            int len = messageHeader.Length;
 
       if (len == 0) {
-        var msg = "An empty response header.";
+                string msg = "An empty response header.";
 
         throw new ArgumentException (msg);
       }
 
-      var slParts = messageHeader[0].Split (new[] { ' ' }, 3);
-      var plen = slParts.Length;
+            string[] slParts = messageHeader[0].Split (new[] { ' ' }, 3);
+            int plen = slParts.Length;
 
       if (plen < 2) {
-        var msg = "It includes an invalid status line.";
+                string msg = "It includes an invalid status line.";
 
         throw new ArgumentException (msg);
       }
 
-      var code = slParts[1].ToInt32 ();
-      var reason = plen == 3 ? slParts[2] : null;
-      var ver = slParts[0].Substring (5).ToVersion ();
+            int code = slParts[1].ToInt32 ();
+            string reason = plen == 3 ? slParts[2] : null;
+            Version ver = slParts[0].Substring (5).ToVersion ();
 
-      var headers = new WebHeaderCollection ();
+            WebHeaderCollection headers = new WebHeaderCollection ();
 
-      for (var i = 1; i < len; i++)
+      for (int i = 1; i < len; i++)
         headers.InternalSet (messageHeader[i], true);
 
       return new HttpResponse (code, reason, ver, headers);
@@ -249,10 +249,10 @@ namespace WebSocketSharp
       if (cookies == null || cookies.Count == 0)
         return;
 
-      var headers = Headers;
+            NameValueCollection headers = Headers;
 
-      foreach (var cookie in cookies.Sorted) {
-        var val = cookie.ToResponseString ();
+      foreach (Cookie cookie in cookies.Sorted) {
+                string val = cookie.ToResponseString ();
 
         headers.Add ("Set-Cookie", val);
       }

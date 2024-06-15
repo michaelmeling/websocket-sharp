@@ -291,12 +291,12 @@ namespace WebSocketSharp.Net
         throw new ArgumentException ("An empty string.", "name");
 
       if (name[0] == '$') {
-        var msg = "It starts with a dollar sign.";
+                string msg = "It starts with a dollar sign.";
         throw new ArgumentException (msg, "name");
       }
 
       if (!name.IsToken ()) {
-        var msg = "It contains an invalid character.";
+                string msg = "It contains an invalid character.";
         throw new ArgumentException (msg, "name");
       }
 
@@ -305,7 +305,7 @@ namespace WebSocketSharp.Net
 
       if (value.Contains (_reservedCharsForValue)) {
         if (!value.IsEnclosedIn ('"')) {
-          var msg = "A string not enclosed in double quotes.";
+                    string msg = "A string not enclosed in double quotes.";
           throw new ArgumentException (msg, "value");
         }
       }
@@ -328,11 +328,11 @@ namespace WebSocketSharp.Net
         if (_expires == DateTime.MinValue)
           return 0;
 
-        var expires = _expires.Kind != DateTimeKind.Local
+                DateTime expires = _expires.Kind != DateTimeKind.Local
                       ? _expires.ToLocalTime ()
                       : _expires;
 
-        var span = expires - DateTime.Now;
+                TimeSpan span = expires - DateTime.Now;
         return span > TimeSpan.Zero
                ? (int) span.TotalSeconds
                : 0;
@@ -575,12 +575,12 @@ namespace WebSocketSharp.Net
           throw new ArgumentException ("An empty string.", "value");
 
         if (value[0] == '$') {
-          var msg = "It starts with a dollar sign.";
+                    string msg = "It starts with a dollar sign.";
           throw new ArgumentException (msg, "value");
         }
 
         if (!value.IsToken ()) {
-          var msg = "It contains an invalid character.";
+                    string msg = "It contains an invalid character.";
           throw new ArgumentException (msg, "value");
         }
 
@@ -696,7 +696,7 @@ namespace WebSocketSharp.Net
 
         if (value.Contains (_reservedCharsForValue)) {
           if (!value.IsEnclosedIn ('"')) {
-            var msg = "A string not enclosed in double quotes.";
+                        string msg = "A string not enclosed in double quotes.";
             throw new ArgumentException (msg, "value");
           }
         }
@@ -759,7 +759,7 @@ namespace WebSocketSharp.Net
 
     private string toResponseStringVersion0 ()
     {
-      var buff = new StringBuilder (64);
+            StringBuilder buff = new StringBuilder (64);
 
       buff.AppendFormat ("{0}={1}", _name, _value);
 
@@ -793,7 +793,7 @@ namespace WebSocketSharp.Net
 
     private string toResponseStringVersion1 ()
     {
-      var buff = new StringBuilder (64);
+            StringBuilder buff = new StringBuilder (64);
 
       buff.AppendFormat ("{0}={1}; Version={2}", _name, _value, _version);
 
@@ -817,7 +817,7 @@ namespace WebSocketSharp.Net
         buff.AppendFormat ("; Comment={0}", HttpUtility.UrlEncode (_comment));
 
       if (_commentUri != null) {
-        var url = _commentUri.OriginalString;
+                string url = _commentUri.OriginalString;
         buff.AppendFormat (
           "; CommentURL={0}", !url.IsToken () ? url.Quote () : url
         );
@@ -836,12 +836,12 @@ namespace WebSocketSharp.Net
     {
       result = null;
 
-      var arr = value.Trim ('"').Split (',');
-      var len = arr.Length;
-      var res = new int[len];
+            string[] arr = value.Trim ('"').Split (',');
+            int len = arr.Length;
+            int[] res = new int[len];
 
-      for (var i = 0; i < len; i++) {
-        var s = arr[i].Trim ();
+      for (int i = 0; i < len; i++) {
+                string s = arr[i].Trim ();
         if (s.Length == 0) {
           res[i] = Int32.MinValue;
           continue;
@@ -861,8 +861,8 @@ namespace WebSocketSharp.Net
 
     internal bool EqualsWithoutValue (Cookie cookie)
     {
-      var caseSensitive = StringComparison.InvariantCulture;
-      var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+            StringComparison caseSensitive = StringComparison.InvariantCulture;
+            StringComparison caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
       return _name.Equals (cookie._name, caseInsensitive)
              && _path.Equals (cookie._path, caseSensitive)
@@ -872,8 +872,8 @@ namespace WebSocketSharp.Net
 
     internal bool EqualsWithoutValueAndVersion (Cookie cookie)
     {
-      var caseSensitive = StringComparison.InvariantCulture;
-      var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+            StringComparison caseSensitive = StringComparison.InvariantCulture;
+            StringComparison caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
       return _name.Equals (cookie._name, caseInsensitive)
              && _path.Equals (cookie._path, caseSensitive)
@@ -888,7 +888,7 @@ namespace WebSocketSharp.Net
       if (_version == 0)
         return String.Format ("{0}={1}", _name, _value);
 
-      var buff = new StringBuilder (64);
+            StringBuilder buff = new StringBuilder (64);
 
       buff.AppendFormat ("$Version={0}; {1}={2}", _version, _name, _value);
 
@@ -969,12 +969,12 @@ namespace WebSocketSharp.Net
     /// </returns>
     public override bool Equals (object comparand)
     {
-      var cookie = comparand as Cookie;
+            Cookie cookie = comparand as Cookie;
       if (cookie == null)
         return false;
 
-      var caseSensitive = StringComparison.InvariantCulture;
-      var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+            StringComparison caseSensitive = StringComparison.InvariantCulture;
+            StringComparison caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
       return _name.Equals (cookie._name, caseInsensitive)
              && _value.Equals (cookie._value, caseSensitive)

@@ -269,13 +269,13 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        var val = _context.Request.Headers["Sec-WebSocket-Protocol"];
+                string val = _context.Request.Headers["Sec-WebSocket-Protocol"];
 
         if (val == null || val.Length == 0)
           yield break;
 
-        foreach (var elm in val.Split (',')) {
-          var protocol = elm.Trim ();
+        foreach (string elm in val.Split (',')) {
+                    string protocol = elm.Trim ();
 
           if (protocol.Length == 0)
             continue;

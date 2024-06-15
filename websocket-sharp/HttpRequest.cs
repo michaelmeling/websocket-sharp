@@ -93,7 +93,7 @@ namespace WebSocketSharp
 
     public AuthenticationResponse AuthenticationResponse {
       get {
-        var val = Headers["Authorization"];
+                string val = Headers["Authorization"];
 
         return val != null && val.Length > 0
                ? AuthenticationResponse.Parse (val)
@@ -142,11 +142,11 @@ namespace WebSocketSharp
 
     internal static HttpRequest CreateConnectRequest (Uri targetUri)
     {
-      var host = targetUri.DnsSafeHost;
-      var port = targetUri.Port;
-      var authority = String.Format ("{0}:{1}", host, port);
+            string host = targetUri.DnsSafeHost;
+            int port = targetUri.Port;
+            string authority = String.Format ("{0}:{1}", host, port);
 
-      var ret = new HttpRequest ("CONNECT", authority);
+            HttpRequest ret = new HttpRequest ("CONNECT", authority);
 
       ret.Headers["Host"] = port != 80 ? authority : host;
 
@@ -155,13 +155,13 @@ namespace WebSocketSharp
 
     internal static HttpRequest CreateWebSocketHandshakeRequest (Uri targetUri)
     {
-      var ret = new HttpRequest ("GET", targetUri.PathAndQuery);
+            HttpRequest ret = new HttpRequest ("GET", targetUri.PathAndQuery);
 
-      var headers = ret.Headers;
+            NameValueCollection headers = ret.Headers;
 
-      var port = targetUri.Port;
-      var schm = targetUri.Scheme;
-      var defaultPort = (port == 80 && schm == "ws")
+            int port = targetUri.Port;
+            string schm = targetUri.Scheme;
+            bool defaultPort = (port == 80 && schm == "ws")
                         || (port == 443 && schm == "wss");
 
       headers["Host"] = !defaultPort
@@ -183,29 +183,29 @@ namespace WebSocketSharp
 
     internal static HttpRequest Parse (string[] messageHeader)
     {
-      var len = messageHeader.Length;
+            int len = messageHeader.Length;
 
       if (len == 0) {
-        var msg = "An empty request header.";
+                string msg = "An empty request header.";
 
         throw new ArgumentException (msg);
       }
 
-      var rlParts = messageHeader[0].Split (new[] { ' ' }, 3);
+            string[] rlParts = messageHeader[0].Split (new[] { ' ' }, 3);
 
       if (rlParts.Length != 3) {
-        var msg = "It includes an invalid request line.";
+                string msg = "It includes an invalid request line.";
 
         throw new ArgumentException (msg);
       }
 
-      var method = rlParts[0];
-      var target = rlParts[1];
-      var ver = rlParts[2].Substring (5).ToVersion ();
+            string method = rlParts[0];
+            string target = rlParts[1];
+            Version ver = rlParts[2].Substring (5).ToVersion ();
 
-      var headers = new WebHeaderCollection ();
+            WebHeaderCollection headers = new WebHeaderCollection ();
 
-      for (var i = 1; i < len; i++)
+      for (int i = 1; i < len; i++)
         headers.InternalSet (messageHeader[i], false);
 
       return new HttpRequest (method, target, ver, headers);
@@ -227,16 +227,16 @@ namespace WebSocketSharp
       if (cookies == null || cookies.Count == 0)
         return;
 
-      var buff = new StringBuilder (64);
+            StringBuilder buff = new StringBuilder (64);
 
-      foreach (var cookie in cookies.Sorted) {
+      foreach (Cookie cookie in cookies.Sorted) {
         if (cookie.Expired)
           continue;
 
         buff.AppendFormat ("{0}; ", cookie);
       }
 
-      var len = buff.Length;
+            int len = buff.Length;
 
       if (len <= 2)
         return;

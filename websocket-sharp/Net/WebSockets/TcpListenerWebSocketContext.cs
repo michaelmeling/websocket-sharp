@@ -80,10 +80,10 @@ namespace WebSocketSharp.Net.WebSockets
       _secure = secure;
       _log = log;
 
-      var netStream = tcpClient.GetStream ();
+            NetworkStream netStream = tcpClient.GetStream ();
 
       if (secure) {
-        var sslStream = new SslStream (
+                SslStream sslStream = new SslStream (
                           netStream,
                           false,
                           sslConfig.ClientCertificateValidationCallback
@@ -103,7 +103,7 @@ namespace WebSocketSharp.Net.WebSockets
         _stream = netStream;
       }
 
-      var sock = tcpClient.Client;
+            Socket sock = tcpClient.Client;
       _serverEndPoint = sock.LocalEndPoint;
       _userEndPoint = sock.RemoteEndPoint;
 
@@ -264,8 +264,8 @@ namespace WebSocketSharp.Net.WebSockets
     public override NameValueCollection QueryString {
       get {
         if (_queryString == null) {
-          var uri = RequestUri;
-          var query = uri != null ? uri.Query : null;
+                    Uri uri = RequestUri;
+                    string query = uri != null ? uri.Query : null;
 
           _queryString = QueryStringCollection.Parse (query, Encoding.UTF8);
         }
@@ -339,13 +339,13 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        var val = _request.Headers["Sec-WebSocket-Protocol"];
+                string val = _request.Headers["Sec-WebSocket-Protocol"];
 
         if (val == null || val.Length == 0)
           yield break;
 
-        foreach (var elm in val.Split (',')) {
-          var protocol = elm.Trim ();
+        foreach (string elm in val.Split (',')) {
+                    string protocol = elm.Trim ();
 
           if (protocol.Length == 0)
             continue;
@@ -462,7 +462,7 @@ namespace WebSocketSharp.Net.WebSockets
       Func<IIdentity, NetworkCredential> credentialsFinder
     )
     {
-      var user = HttpUtility.CreateUser (
+            IPrincipal user = HttpUtility.CreateUser (
                    _request.Headers["Authorization"],
                    scheme,
                    realm,

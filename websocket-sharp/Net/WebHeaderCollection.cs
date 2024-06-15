@@ -590,9 +590,9 @@ namespace WebSocketSharp.Net
         _internallyUsed = serializationInfo.GetBoolean ("InternallyUsed");
         _state = (HttpHeaderType) serializationInfo.GetInt32 ("State");
 
-        var cnt = serializationInfo.GetInt32 ("Count");
+                int cnt = serializationInfo.GetInt32 ("Count");
 
-        for (var i = 0; i < cnt; i++) {
+        for (int i = 0; i < cnt; i++) {
           base.Add (
             serializationInfo.GetString (i.ToString ()),
             serializationInfo.GetString ((cnt + i).ToString ())
@@ -690,8 +690,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string this[HttpRequestHeader header] {
       get {
-        var key = header.ToString ();
-        var name = getHeaderName (key);
+                string key = header.ToString ();
+                string name = getHeaderName (key);
 
         return Get (name);
       }
@@ -735,8 +735,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string this[HttpResponseHeader header] {
       get {
-        var key = header.ToString ();
-        var name = getHeaderName (key);
+                string key = header.ToString ();
+                string name = getHeaderName (key);
 
         return Get (name);
       }
@@ -785,7 +785,7 @@ namespace WebSocketSharp.Net
         return;
 
       if (headerType != _state) {
-        var msg = "This instance does not allow the header.";
+                string msg = "This instance does not allow the header.";
 
         throw new InvalidOperationException (msg);
       }
@@ -794,13 +794,13 @@ namespace WebSocketSharp.Net
     private static string checkName (string name, string paramName)
     {
       if (name == null) {
-        var msg = "The name is null.";
+                string msg = "The name is null.";
 
         throw new ArgumentNullException (paramName, msg);
       }
 
       if (name.Length == 0) {
-        var msg = "The name is an empty string.";
+                string msg = "The name is an empty string.";
 
         throw new ArgumentException (msg, paramName);
       }
@@ -808,13 +808,13 @@ namespace WebSocketSharp.Net
       name = name.Trim ();
 
       if (name.Length == 0) {
-        var msg = "The name is a string of spaces.";
+                string msg = "The name is a string of spaces.";
 
         throw new ArgumentException (msg, paramName);
       }
 
       if (!name.IsToken ()) {
-        var msg = "The name contains an invalid character.";
+                string msg = "The name contains an invalid character.";
 
         throw new ArgumentException (msg, paramName);
       }
@@ -827,10 +827,10 @@ namespace WebSocketSharp.Net
       if (_internallyUsed)
         return;
 
-      var res = headerType == HttpHeaderType.Response;
+            bool res = headerType == HttpHeaderType.Response;
 
       if (isRestricted (name, res)) {
-        var msg = "The header is a restricted header.";
+                string msg = "The header is a restricted header.";
 
         throw new ArgumentException (msg);
       }
@@ -843,19 +843,19 @@ namespace WebSocketSharp.Net
 
       value = value.Trim ();
 
-      var len = value.Length;
+            int len = value.Length;
 
       if (len == 0)
         return value;
 
       if (len > 65535) {
-        var msg = "The length of the value is greater than 65,535 characters.";
+                string msg = "The length of the value is greater than 65,535 characters.";
 
         throw new ArgumentOutOfRangeException (paramName, msg);
       }
 
       if (!value.IsText ()) {
-        var msg = "The value contains an invalid character.";
+                string msg = "The value contains an invalid character.";
 
         throw new ArgumentException (msg, paramName);
       }
@@ -865,9 +865,9 @@ namespace WebSocketSharp.Net
 
     private static HttpHeaderInfo getHeaderInfo (string name)
     {
-      var comparison = StringComparison.InvariantCultureIgnoreCase;
+            StringComparison comparison = StringComparison.InvariantCultureIgnoreCase;
 
-      foreach (var headerInfo in _headers.Values) {
+      foreach (HttpHeaderInfo headerInfo in _headers.Values) {
         if (headerInfo.HeaderName.Equals (name, comparison))
           return headerInfo;
       }
@@ -886,7 +886,7 @@ namespace WebSocketSharp.Net
 
     private static HttpHeaderType getHeaderType (string name)
     {
-      var headerInfo = getHeaderInfo (name);
+            HttpHeaderInfo headerInfo = getHeaderInfo (name);
 
       if (headerInfo == null)
         return HttpHeaderType.Unspecified;
@@ -904,14 +904,14 @@ namespace WebSocketSharp.Net
 
     private static bool isMultiValue (string name, bool response)
     {
-      var headerInfo = getHeaderInfo (name);
+            HttpHeaderInfo headerInfo = getHeaderInfo (name);
 
       return headerInfo != null && headerInfo.IsMultiValue (response);
     }
 
     private static bool isRestricted (string name, bool response)
     {
-      var headerInfo = getHeaderInfo (name);
+            HttpHeaderInfo headerInfo = getHeaderInfo (name);
 
       return headerInfo != null && headerInfo.IsRestricted (response);
     }
@@ -940,16 +940,16 @@ namespace WebSocketSharp.Net
 
     internal void InternalSet (string header, bool response)
     {
-      var idx = header.IndexOf (':');
+            int idx = header.IndexOf (':');
 
       if (idx == -1) {
-        var msg = "It does not contain a colon character.";
+                string msg = "It does not contain a colon character.";
 
         throw new ArgumentException (msg, "header");
       }
 
-      var name = header.Substring (0, idx);
-      var val = idx < header.Length - 1
+            string name = header.Substring (0, idx);
+            string val = idx < header.Length - 1
                 ? header.Substring (idx + 1)
                 : String.Empty;
 
@@ -980,18 +980,18 @@ namespace WebSocketSharp.Net
 
     internal string ToStringMultiValue (bool response)
     {
-      var cnt = Count;
+            int cnt = Count;
 
       if (cnt == 0)
         return "\r\n";
 
-      var buff = new StringBuilder ();
+            StringBuilder buff = new StringBuilder ();
 
-      for (var i = 0; i < cnt; i++) {
-        var name = GetKey (i);
+      for (int i = 0; i < cnt; i++) {
+                string name = GetKey (i);
 
         if (isMultiValue (name, response)) {
-          foreach (var val in GetValues (i))
+          foreach (string val in GetValues (i))
             buff.AppendFormat ("{0}: {1}\r\n", name, val);
 
           continue;
@@ -1057,7 +1057,7 @@ namespace WebSocketSharp.Net
       headerName = checkName (headerName, "headerName");
       headerValue = checkValue (headerValue, "headerValue");
 
-      var headerType = getHeaderType (headerName);
+            HttpHeaderType headerType = getHeaderType (headerName);
 
       checkAllowed (headerType);
       add (headerName, headerValue, headerType);
@@ -1132,31 +1132,31 @@ namespace WebSocketSharp.Net
       if (header == null)
         throw new ArgumentNullException ("header");
 
-      var len = header.Length;
+            int len = header.Length;
 
       if (len == 0) {
-        var msg = "An empty string.";
+                string msg = "An empty string.";
 
         throw new ArgumentException (msg, "header");
       }
 
-      var idx = header.IndexOf (':');
+            int idx = header.IndexOf (':');
 
       if (idx == -1) {
-        var msg = "It does not contain a colon character.";
+                string msg = "It does not contain a colon character.";
 
         throw new ArgumentException (msg, "header");
       }
 
-      var name = header.Substring (0, idx);
-      var val = idx < len - 1
+            string name = header.Substring (0, idx);
+            string val = idx < len - 1
                 ? header.Substring (idx + 1)
                 : String.Empty;
 
       name = checkName (name, "header");
       val = checkValue (val, "header");
 
-      var headerType = getHeaderType (name);
+            HttpHeaderType headerType = getHeaderType (name);
 
       checkRestricted (name, headerType);
       checkAllowed (headerType);
@@ -1200,8 +1200,8 @@ namespace WebSocketSharp.Net
     {
       value = checkValue (value, "value");
 
-      var key = header.ToString ();
-      var name = getHeaderName (key);
+            string key = header.ToString ();
+            string name = getHeaderName (key);
 
       checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (HttpHeaderType.Request);
@@ -1245,8 +1245,8 @@ namespace WebSocketSharp.Net
     {
       value = checkValue (value, "value");
 
-      var key = header.ToString ();
-      var name = getHeaderName (key);
+            string key = header.ToString ();
+            string name = getHeaderName (key);
 
       checkRestricted (name, HttpHeaderType.Response);
       checkAllowed (HttpHeaderType.Response);
@@ -1306,7 +1306,7 @@ namespace WebSocketSharp.Net
       name = checkName (name, "name");
       value = checkValue (value, "value");
 
-      var headerType = getHeaderType (name);
+            HttpHeaderType headerType = getHeaderType (name);
 
       checkRestricted (name, headerType);
       checkAllowed (headerType);
@@ -1413,7 +1413,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public override string[] GetValues (int index)
     {
-      var vals = base.GetValues (index);
+            string[] vals = base.GetValues (index);
 
       return vals != null && vals.Length > 0 ? vals : null;
     }
@@ -1435,7 +1435,7 @@ namespace WebSocketSharp.Net
     /// </param>
     public override string[] GetValues (string name)
     {
-      var vals = base.GetValues (name);
+            string[] vals = base.GetValues (name);
 
       return vals != null && vals.Length > 0 ? vals : null;
     }
@@ -1470,11 +1470,11 @@ namespace WebSocketSharp.Net
       serializationInfo.AddValue ("InternallyUsed", _internallyUsed);
       serializationInfo.AddValue ("State", (int) _state);
 
-      var cnt = Count;
+            int cnt = Count;
 
       serializationInfo.AddValue ("Count", cnt);
 
-      for (var i = 0; i < cnt; i++) {
+      for (int i = 0; i < cnt; i++) {
         serializationInfo.AddValue (i.ToString (), GetKey (i));
         serializationInfo.AddValue ((cnt + i).ToString (), Get (i));
       }
@@ -1586,8 +1586,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Remove (HttpRequestHeader header)
     {
-      var key = header.ToString ();
-      var name = getHeaderName (key);
+            string key = header.ToString ();
+            string name = getHeaderName (key);
 
       checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (HttpHeaderType.Request);
@@ -1613,8 +1613,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Remove (HttpResponseHeader header)
     {
-      var key = header.ToString ();
-      var name = getHeaderName (key);
+            string key = header.ToString ();
+            string name = getHeaderName (key);
 
       checkRestricted (name, HttpHeaderType.Response);
       checkAllowed (HttpHeaderType.Response);
@@ -1660,7 +1660,7 @@ namespace WebSocketSharp.Net
     {
       name = checkName (name, "name");
 
-      var headerType = getHeaderType (name);
+            HttpHeaderType headerType = getHeaderType (name);
 
       checkRestricted (name, headerType);
       checkAllowed (headerType);
@@ -1704,8 +1704,8 @@ namespace WebSocketSharp.Net
     {
       value = checkValue (value, "value");
 
-      var key = header.ToString ();
-      var name = getHeaderName (key);
+            string key = header.ToString ();
+            string name = getHeaderName (key);
 
       checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (HttpHeaderType.Request);
@@ -1749,8 +1749,8 @@ namespace WebSocketSharp.Net
     {
       value = checkValue (value, "value");
 
-      var key = header.ToString ();
-      var name = getHeaderName (key);
+            string key = header.ToString ();
+            string name = getHeaderName (key);
 
       checkRestricted (name, HttpHeaderType.Response);
       checkAllowed (HttpHeaderType.Response);
@@ -1810,7 +1810,7 @@ namespace WebSocketSharp.Net
       name = checkName (name, "name");
       value = checkValue (value, "value");
 
-      var headerType = getHeaderType (name);
+            HttpHeaderType headerType = getHeaderType (name);
 
       checkRestricted (name, headerType);
       checkAllowed (headerType);
@@ -1837,14 +1837,14 @@ namespace WebSocketSharp.Net
     /// </returns>
     public override string ToString ()
     {
-      var cnt = Count;
+            int cnt = Count;
 
       if (cnt == 0)
         return "\r\n";
 
-      var buff = new StringBuilder ();
+            StringBuilder buff = new StringBuilder ();
 
-      for (var i = 0; i < cnt; i++)
+      for (int i = 0; i < cnt; i++)
         buff.AppendFormat ("{0}: {1}\r\n", GetKey (i), Get (i));
 
       buff.Append ("\r\n");

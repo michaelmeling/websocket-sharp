@@ -94,9 +94,9 @@ namespace WebSocketSharp
 
     protected string HeaderSection {
       get {
-        var buff = new StringBuilder (64);
+                StringBuilder buff = new StringBuilder (64);
 
-        foreach (var key in _headers.AllKeys)
+        foreach (string key in _headers.AllKeys)
           buff.AppendFormat ("{0}: {1}{2}", key, _headers[key], CrLf);
 
         buff.Append (CrLf);
@@ -147,9 +147,9 @@ namespace WebSocketSharp
       if (_messageBodyData == null || _messageBodyData.LongLength == 0)
         return String.Empty;
 
-      var contentType = _headers["Content-Type"];
+            string contentType = _headers["Content-Type"];
 
-      var enc = contentType != null && contentType.Length > 0
+            Encoding enc = contentType != null && contentType.Length > 0
                 ? HttpUtility.GetEncoding (contentType)
                 : Encoding.UTF8;
 
@@ -161,13 +161,13 @@ namespace WebSocketSharp
       long len;
 
       if (!Int64.TryParse (length, out len)) {
-        var msg = "It cannot be parsed.";
+                string msg = "It cannot be parsed.";
 
         throw new ArgumentException (msg, "length");
       }
 
       if (len < 0) {
-        var msg = "It is less than zero.";
+                string msg = "It is less than zero.";
 
         throw new ArgumentOutOfRangeException ("length", msg);
       }
@@ -181,12 +181,12 @@ namespace WebSocketSharp
 
     private static string[] readMessageHeaderFrom (Stream stream)
     {
-      var buff = new List<byte> ();
-      var cnt = 0;
+            List<byte> buff = new List<byte> ();
+            int cnt = 0;
       Action<int> add =
         i => {
           if (i == -1) {
-            var msg = "The header could not be read from the data stream.";
+                string msg = "The header could not be read from the data stream.";
 
             throw new EndOfStreamException (msg);
           }
@@ -196,7 +196,7 @@ namespace WebSocketSharp
           cnt++;
         };
 
-      var end = false;
+            bool end = false;
 
       do {
         end = stream.ReadByte ().IsEqualTo ('\r', add)
@@ -205,14 +205,14 @@ namespace WebSocketSharp
               && stream.ReadByte ().IsEqualTo ('\n', add);
 
         if (cnt > _maxMessageHeaderLength) {
-          var msg = "The length of the header is greater than the max length.";
+                    string msg = "The length of the header is greater than the max length.";
 
           throw new InvalidOperationException (msg);
         }
       }
       while (!end);
 
-      var bytes = buff.ToArray ();
+            byte[] bytes = buff.ToArray ();
 
       return Encoding.UTF8.GetString (bytes)
              .Replace (CrLfSp, " ")
@@ -226,7 +226,7 @@ namespace WebSocketSharp
 
     internal void WriteTo (Stream stream)
     {
-      var bytes = ToByteArray ();
+            byte[] bytes = ToByteArray ();
 
       stream.Write (bytes, 0, bytes.Length);
     }
@@ -242,8 +242,8 @@ namespace WebSocketSharp
     {
       T ret = null;
 
-      var timeout = false;
-      var timer = new Timer (
+            bool timeout = false;
+            Timer timer = new Timer (
                     state => {
                       timeout = true;
                       stream.Close ();
@@ -256,10 +256,10 @@ namespace WebSocketSharp
       Exception exception = null;
 
       try {
-        var header = readMessageHeaderFrom (stream);
+                string[] header = readMessageHeaderFrom (stream);
         ret = parser (header);
 
-        var contentLen = ret.Headers["Content-Length"];
+                string contentLen = ret.Headers["Content-Length"];
 
         if (contentLen != null && contentLen.Length > 0)
           ret._messageBodyData = readMessageBodyFrom (stream, contentLen);
@@ -273,13 +273,13 @@ namespace WebSocketSharp
       }
 
       if (timeout) {
-        var msg = "A timeout has occurred.";
+                string msg = "A timeout has occurred.";
 
         throw new WebSocketException (msg);
       }
 
       if (exception != null) {
-        var msg = "An exception has occurred.";
+                string msg = "An exception has occurred.";
 
         throw new WebSocketException (msg, exception);
       }
@@ -293,7 +293,7 @@ namespace WebSocketSharp
 
     public byte[] ToByteArray ()
     {
-      var headerData = Encoding.UTF8.GetBytes (MessageHeader);
+            byte[] headerData = Encoding.UTF8.GetBytes (MessageHeader);
 
       return _messageBodyData != null
              ? headerData.Concat (_messageBodyData).ToArray ()

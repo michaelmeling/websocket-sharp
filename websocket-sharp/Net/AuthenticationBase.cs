@@ -100,12 +100,12 @@ namespace WebSocketSharp.Net
 
     internal static string CreateNonceValue ()
     {
-      var src = new byte[16];
-      var rand = new Random ();
+            byte[] src = new byte[16];
+            Random rand = new Random ();
       rand.NextBytes (src);
 
-      var res = new StringBuilder (32);
-      foreach (var b in src)
+            StringBuilder res = new StringBuilder (32);
+      foreach (byte b in src)
         res.Append (b.ToString ("x2"));
 
       return res.ToString ();
@@ -113,11 +113,11 @@ namespace WebSocketSharp.Net
 
     internal static NameValueCollection ParseParameters (string value)
     {
-      var res = new NameValueCollection ();
-      foreach (var param in value.SplitHeaderValue (',')) {
-        var i = param.IndexOf ('=');
-        var name = i > 0 ? param.Substring (0, i).Trim () : null;
-        var val = i < 0
+            NameValueCollection res = new NameValueCollection ();
+      foreach (string param in value.SplitHeaderValue (',')) {
+                int i = param.IndexOf ('=');
+                string name = i > 0 ? param.Substring (0, i).Trim () : null;
+                string val = i < 0
                   ? param.Trim ().Trim ('"')
                   : i < param.Length - 1
                     ? param.Substring (i + 1).Trim ().Trim ('"')

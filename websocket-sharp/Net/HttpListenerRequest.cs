@@ -125,7 +125,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string[] AcceptTypes {
       get {
-        var val = _headers["Accept"];
+                string val = _headers["Accept"];
 
         if (val == null)
           return null;
@@ -411,8 +411,8 @@ namespace WebSocketSharp.Net
     public NameValueCollection QueryString {
       get {
         if (_queryString == null) {
-          var url = Url;
-          var query = url != null ? url.Query : null;
+                    Uri url = Url;
+                    string query = url != null ? url.Query : null;
 
           _queryString = QueryStringCollection.Parse (query, _defaultEncoding);
         }
@@ -507,7 +507,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public Uri UrlReferrer {
       get {
-        var val = _headers["Referer"];
+                string val = _headers["Referer"];
 
         if (val == null)
           return null;
@@ -586,7 +586,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string[] UserLanguages {
       get {
-        var val = _headers["Accept-Language"];
+                string val = _headers["Accept-Language"];
 
         if (val == null)
           return null;
@@ -604,7 +604,7 @@ namespace WebSocketSharp.Net
 
     private Encoding getContentEncoding ()
     {
-      var val = _headers["Content-Type"];
+            string val = _headers["Content-Type"];
 
       if (val == null)
         return _defaultEncoding;
@@ -622,7 +622,7 @@ namespace WebSocketSharp.Net
 
     internal void AddHeader (string headerField)
     {
-      var start = headerField[0];
+            char start = headerField[0];
 
       if (start == ' ' || start == '\t') {
         _context.ErrorMessage = "Invalid header field";
@@ -630,7 +630,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var colon = headerField.IndexOf (':');
+            int colon = headerField.IndexOf (':');
 
       if (colon < 1) {
         _context.ErrorMessage = "Invalid header field";
@@ -638,7 +638,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var name = headerField.Substring (0, colon).Trim ();
+            string name = headerField.Substring (0, colon).Trim ();
 
       if (name.Length == 0 || !name.IsToken ()) {
         _context.ErrorMessage = "Invalid header name";
@@ -646,13 +646,13 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var val = colon < headerField.Length - 1
+            string val = colon < headerField.Length - 1
                 ? headerField.Substring (colon + 1).Trim ()
                 : String.Empty;
 
       _headers.InternalSet (name, val, false);
 
-      var lower = name.ToLower (CultureInfo.InvariantCulture);
+            string lower = name.ToLower (CultureInfo.InvariantCulture);
 
       if (lower == "host") {
         if (_userHostName != null) {
@@ -707,10 +707,10 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var transferEnc = _headers["Transfer-Encoding"];
+            string transferEnc = _headers["Transfer-Encoding"];
 
       if (transferEnc != null) {
-        var compType = StringComparison.OrdinalIgnoreCase;
+                StringComparison compType = StringComparison.OrdinalIgnoreCase;
 
         if (!transferEnc.Equals ("chunked", compType)) {
           _context.ErrorStatusCode = 501;
@@ -738,10 +738,10 @@ namespace WebSocketSharp.Net
         }
       }
 
-      var expect = _headers["Expect"];
+            string expect = _headers["Expect"];
 
       if (expect != null) {
-        var compType = StringComparison.OrdinalIgnoreCase;
+                StringComparison compType = StringComparison.OrdinalIgnoreCase;
 
         if (!expect.Equals ("100-continue", compType)) {
           _context.ErrorStatusCode = 417;
@@ -750,7 +750,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        var output = _connection.GetResponseStream ();
+                ResponseStream output = _connection.GetResponseStream ();
 
         output.InternalWrite (_100continue, 0, _100continue.Length);
       }
@@ -758,24 +758,24 @@ namespace WebSocketSharp.Net
 
     internal bool FlushInput ()
     {
-      var input = InputStream;
+            Stream input = InputStream;
 
       if (input == Stream.Null)
         return true;
 
-      var len = 2048;
+            int len = 2048;
 
       if (_contentLength > 0 && _contentLength < len)
         len = (int) _contentLength;
 
-      var buff = new byte[len];
+            byte[] buff = new byte[len];
 
       while (true) {
         try {
-          var ares = input.BeginRead (buff, 0, len, null, null);
+                    IAsyncResult ares = input.BeginRead (buff, 0, len, null, null);
 
           if (!ares.IsCompleted) {
-            var timeout = 100;
+                        int timeout = 100;
 
             if (!ares.AsyncWaitHandle.WaitOne (timeout))
               return false;
@@ -797,7 +797,7 @@ namespace WebSocketSharp.Net
 
     internal void SetRequestLine (string requestLine)
     {
-      var parts = requestLine.Split (new[] { ' ' }, 3);
+            string[] parts = requestLine.Split (new[] { ' ' }, 3);
 
       if (parts.Length < 3) {
         _context.ErrorMessage = "Invalid request line (parts)";
@@ -805,7 +805,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var method = parts[0];
+            string method = parts[0];
 
       if (method.Length == 0) {
         _context.ErrorMessage = "Invalid request line (method)";
@@ -820,7 +820,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var target = parts[1];
+            string target = parts[1];
 
       if (target.Length == 0) {
         _context.ErrorMessage = "Invalid request line (target)";
@@ -828,7 +828,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var rawVer = parts[2];
+            string rawVer = parts[2];
 
       if (rawVer.Length != 8) {
         _context.ErrorMessage = "Invalid request line (version)";
@@ -935,10 +935,10 @@ namespace WebSocketSharp.Net
     /// </returns>
     public override string ToString ()
     {
-      var buff = new StringBuilder (64);
+            StringBuilder buff = new StringBuilder (64);
 
-      var fmt = "{0} {1} HTTP/{2}\r\n";
-      var headers = _headers.ToString ();
+            string fmt = "{0} {1} HTTP/{2}\r\n";
+            string headers = _headers.ToString ();
 
       buff
       .AppendFormat (fmt, _httpMethod, _rawUrl, _protocolVersion)

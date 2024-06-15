@@ -158,13 +158,13 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("An empty string.", "path");
 
         if (path[0] != '/') {
-          var msg = "It is not an absolute path.";
+                    string msg = "It is not an absolute path.";
 
           throw new ArgumentException (msg, "path");
         }
 
         if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
-          var msg = "It includes either or both query and fragment components.";
+                    string msg = "It includes either or both query and fragment components.";
 
           throw new ArgumentException (msg, "path");
         }
@@ -204,7 +204,7 @@ namespace WebSocketSharp.Server
           if (!canSet ())
             return;
 
-          foreach (var host in _hosts.Values)
+          foreach (WebSocketServiceHost host in _hosts.Values)
             host.KeepClean = value;
 
           _keepClean = value;
@@ -257,7 +257,7 @@ namespace WebSocketSharp.Server
 
       set {
         if (value <= TimeSpan.Zero) {
-          var msg = "It is zero or less.";
+                    string msg = "It is zero or less.";
 
           throw new ArgumentOutOfRangeException ("value", msg);
         }
@@ -266,7 +266,7 @@ namespace WebSocketSharp.Server
           if (!canSet ())
             return;
 
-          foreach (var host in _hosts.Values)
+          foreach (WebSocketServiceHost host in _hosts.Values)
             host.WaitTime = value;
 
           _waitTime = value;
@@ -300,7 +300,7 @@ namespace WebSocketSharp.Server
     internal void Start ()
     {
       lock (_sync) {
-        foreach (var host in _hosts.Values)
+        foreach (WebSocketServiceHost host in _hosts.Values)
           host.Start ();
 
         _state = ServerState.Start;
@@ -312,7 +312,7 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         _state = ServerState.ShuttingDown;
 
-        foreach (var host in _hosts.Values)
+        foreach (WebSocketServiceHost host in _hosts.Values)
           host.Stop (code, reason);
 
         _state = ServerState.Stop;
@@ -396,13 +396,13 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/') {
-        var msg = "It is not an absolute path.";
+                string msg = "It is not an absolute path.";
 
         throw new ArgumentException (msg, "path");
       }
 
       if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
-        var msg = "It includes either or both query and fragment components.";
+                string msg = "It includes either or both query and fragment components.";
 
         throw new ArgumentException (msg, "path");
       }
@@ -413,7 +413,7 @@ namespace WebSocketSharp.Server
         WebSocketServiceHost host;
 
         if (_hosts.TryGetValue (path, out host)) {
-          var msg = "It is already in use.";
+                    string msg = "It is already in use.";
 
           throw new ArgumentException (msg, "path");
         }
@@ -450,7 +450,7 @@ namespace WebSocketSharp.Server
         _hosts.Clear ();
       }
 
-      foreach (var host in hosts) {
+      foreach (WebSocketServiceHost host in hosts) {
         if (host.State == ServerState.Start)
           host.Stop (1001, String.Empty);
       }
@@ -506,13 +506,13 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/') {
-        var msg = "It is not an absolute path.";
+                string msg = "It is not an absolute path.";
 
         throw new ArgumentException (msg, "path");
       }
 
       if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
-        var msg = "It includes either or both query and fragment components.";
+                string msg = "It includes either or both query and fragment components.";
 
         throw new ArgumentException (msg, "path");
       }
@@ -590,13 +590,13 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/') {
-        var msg = "It is not an absolute path.";
+                string msg = "It is not an absolute path.";
 
         throw new ArgumentException (msg, "path");
       }
 
       if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
-        var msg = "It includes either or both query and fragment components.";
+                string msg = "It includes either or both query and fragment components.";
 
         throw new ArgumentException (msg, "path");
       }

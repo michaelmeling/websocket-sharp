@@ -53,7 +53,7 @@ namespace WebSocketSharp.Net
 
     internal bool IsMultiValueInRequest {
       get {
-        var headerType = _headerType & HttpHeaderType.MultiValueInRequest;
+                HttpHeaderType headerType = _headerType & HttpHeaderType.MultiValueInRequest;
 
         return headerType == HttpHeaderType.MultiValueInRequest;
       }
@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net
 
     internal bool IsMultiValueInResponse {
       get {
-        var headerType = _headerType & HttpHeaderType.MultiValueInResponse;
+                HttpHeaderType headerType = _headerType & HttpHeaderType.MultiValueInResponse;
 
         return headerType == HttpHeaderType.MultiValueInResponse;
       }
@@ -85,7 +85,7 @@ namespace WebSocketSharp.Net
 
     public bool IsRequest {
       get {
-        var headerType = _headerType & HttpHeaderType.Request;
+                HttpHeaderType headerType = _headerType & HttpHeaderType.Request;
 
         return headerType == HttpHeaderType.Request;
       }
@@ -93,7 +93,7 @@ namespace WebSocketSharp.Net
 
     public bool IsResponse {
       get {
-        var headerType = _headerType & HttpHeaderType.Response;
+                HttpHeaderType headerType = _headerType & HttpHeaderType.Response;
 
         return headerType == HttpHeaderType.Response;
       }
@@ -105,7 +105,7 @@ namespace WebSocketSharp.Net
 
     public bool IsMultiValue (bool response)
     {
-      var headerType = _headerType & HttpHeaderType.MultiValue;
+            HttpHeaderType headerType = _headerType & HttpHeaderType.MultiValue;
 
       if (headerType != HttpHeaderType.MultiValue)
         return response ? IsMultiValueInResponse : IsMultiValueInRequest;
@@ -115,7 +115,7 @@ namespace WebSocketSharp.Net
 
     public bool IsRestricted (bool response)
     {
-      var headerType = _headerType & HttpHeaderType.Restricted;
+            HttpHeaderType headerType = _headerType & HttpHeaderType.Restricted;
 
       if (headerType != HttpHeaderType.Restricted)
         return false;

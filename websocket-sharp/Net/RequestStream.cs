@@ -175,7 +175,7 @@ namespace WebSocketSharp.Net
     )
     {
       if (_disposed) {
-        var name = GetType ().ToString ();
+                string name = GetType ().ToString ();
 
         throw new ObjectDisposedException (name);
       }
@@ -184,21 +184,21 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("buffer");
 
       if (offset < 0) {
-        var msg = "A negative value.";
+                string msg = "A negative value.";
 
         throw new ArgumentOutOfRangeException ("offset", msg);
       }
 
       if (count < 0) {
-        var msg = "A negative value.";
+                string msg = "A negative value.";
 
         throw new ArgumentOutOfRangeException ("count", msg);
       }
 
-      var len = buffer.Length;
+            int len = buffer.Length;
 
       if (offset + count > len) {
-        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
+                string msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
 
         throw new ArgumentException (msg);
       }
@@ -206,10 +206,10 @@ namespace WebSocketSharp.Net
       if (count == 0)
         return _innerStream.BeginRead (buffer, offset, 0, callback, state);
 
-      var nread = fillFromInitialBuffer (buffer, offset, count);
+            int nread = fillFromInitialBuffer (buffer, offset, count);
 
       if (nread != 0) {
-        var ares = new HttpStreamAsyncResult (callback, state);
+                HttpStreamAsyncResult ares = new HttpStreamAsyncResult (callback, state);
 
         ares.Buffer = buffer;
         ares.Offset = offset;
@@ -242,7 +242,7 @@ namespace WebSocketSharp.Net
     public override int EndRead (IAsyncResult asyncResult)
     {
       if (_disposed) {
-        var name = GetType ().ToString ();
+                string name = GetType ().ToString ();
 
         throw new ObjectDisposedException (name);
       }
@@ -251,7 +251,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("asyncResult");
 
       if (asyncResult is HttpStreamAsyncResult) {
-        var ares = (HttpStreamAsyncResult) asyncResult;
+                HttpStreamAsyncResult ares = (HttpStreamAsyncResult) asyncResult;
 
         if (!ares.IsCompleted)
           ares.AsyncWaitHandle.WaitOne ();
@@ -259,7 +259,7 @@ namespace WebSocketSharp.Net
         return ares.SyncRead;
       }
 
-      var nread = _innerStream.EndRead (asyncResult);
+            int nread = _innerStream.EndRead (asyncResult);
 
       if (nread > 0 && _bodyLeft > 0)
         _bodyLeft -= nread;
@@ -279,7 +279,7 @@ namespace WebSocketSharp.Net
     public override int Read (byte[] buffer, int offset, int count)
     {
       if (_disposed) {
-        var name = GetType ().ToString ();
+                string name = GetType ().ToString ();
 
         throw new ObjectDisposedException (name);
       }
@@ -288,21 +288,21 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("buffer");
 
       if (offset < 0) {
-        var msg = "A negative value.";
+                string msg = "A negative value.";
 
         throw new ArgumentOutOfRangeException ("offset", msg);
       }
 
       if (count < 0) {
-        var msg = "A negative value.";
+                string msg = "A negative value.";
 
         throw new ArgumentOutOfRangeException ("count", msg);
       }
 
-      var len = buffer.Length;
+            int len = buffer.Length;
 
       if (offset + count > len) {
-        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
+                string msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
 
         throw new ArgumentException (msg);
       }
@@ -310,7 +310,7 @@ namespace WebSocketSharp.Net
       if (count == 0)
         return 0;
 
-      var nread = fillFromInitialBuffer (buffer, offset, count);
+            int nread = fillFromInitialBuffer (buffer, offset, count);
 
       if (nread == -1)
         return 0;

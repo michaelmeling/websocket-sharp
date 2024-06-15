@@ -120,11 +120,11 @@ namespace WebSocketSharp.Net
 
     private int read (byte[] buffer, int offset, int count)
     {
-      var nread = 0;
-      var cnt = _chunks.Count;
+            int nread = 0;
+            int cnt = _chunks.Count;
 
-      for (var i = 0; i < cnt; i++) {
-        var chunk = _chunks[i];
+      for (int i = 0; i < cnt; i++) {
+                Chunk chunk = _chunks[i];
 
         if (chunk == null)
           continue;
@@ -205,7 +205,7 @@ namespace WebSocketSharp.Net
       if (b != 10)
         return InputChunkState.None;
 
-      var s = _saved.ToString ();
+            string s = _saved.ToString ();
 
       try {
         _chunkSize = Int32.Parse (s, NumberStyles.HexNumber);
@@ -233,7 +233,7 @@ namespace WebSocketSharp.Net
         if (_trailerState == 4) // CR LF CR LF
           break;
 
-        var b = buffer[offset++];
+                byte b = buffer[offset++];
 
         _saved.Append ((char) b);
 
@@ -258,7 +258,7 @@ namespace WebSocketSharp.Net
         _trailerState = 0;
       }
 
-      var len = _saved.Length;
+            int len = _saved.Length;
 
       if (len > 4196)
         throwProtocolViolation ("The trailer is too long.");
@@ -271,11 +271,11 @@ namespace WebSocketSharp.Net
 
       _saved.Length = len - 2;
 
-      var val = _saved.ToString ();
-      var reader = new StringReader (val);
+            string val = _saved.ToString ();
+            StringReader reader = new StringReader (val);
 
       while (true) {
-        var line = reader.ReadLine ();
+                string line = reader.ReadLine ();
 
         if (line == null || line.Length == 0)
           break;
@@ -361,16 +361,16 @@ namespace WebSocketSharp.Net
       byte[] buffer, ref int offset, int length
     )
     {
-      var cnt = length - offset;
-      var left = _chunkSize - _chunkRead;
+            int cnt = length - offset;
+            int left = _chunkSize - _chunkRead;
 
       if (cnt > left)
         cnt = left;
 
-      var data = new byte[cnt];
+            byte[] data = new byte[cnt];
       Buffer.BlockCopy (buffer, offset, data, 0, cnt);
 
-      var chunk = new Chunk (data);
+            Chunk chunk = new Chunk (data);
       _chunks.Add (chunk);
 
       offset += cnt;

@@ -495,19 +495,19 @@ namespace WebSocketSharp.Net
 
     private bool authenticateClient (HttpListenerContext context)
     {
-      var schm = selectAuthenticationScheme (context.Request);
+            AuthenticationSchemes schm = selectAuthenticationScheme (context.Request);
 
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
 
       if (schm == AuthenticationSchemes.None) {
-        var msg = "Authentication not allowed";
+                string msg = "Authentication not allowed";
         context.SendError (403, msg);
 
         return false;
       }
 
-      var realm = getRealm ();
+            string realm = getRealm ();
 
       if (!context.SetUser (schm, realm, _userCredFinder)) {
         context.SendAuthenticationChallenge (schm, realm);
@@ -524,12 +524,12 @@ namespace WebSocketSharp.Net
     {
       lock (_contextRegistrySync) {
         if (!_listening) {
-          var msg = "The method is canceled.";
+                    string msg = "The method is canceled.";
 
           throw new HttpListenerException (995, msg);
         }
 
-        var ares = new HttpListenerAsyncResult (callback, state);
+                HttpListenerAsyncResult ares = new HttpListenerAsyncResult (callback, state);
 
         if (_contextQueue.Count == 0) {
           _waitQueue.Enqueue (ares);
@@ -537,7 +537,7 @@ namespace WebSocketSharp.Net
           return ares;
         }
 
-        var ctx = _contextQueue.Dequeue ();
+                HttpListenerContext ctx = _contextQueue.Dequeue ();
         ares.Complete (ctx, true);
 
         return ares;
@@ -555,29 +555,29 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var ctxs = _contextQueue.ToArray ();
+            HttpListenerContext[] ctxs = _contextQueue.ToArray ();
 
       _contextQueue.Clear ();
 
-      foreach (var ctx in ctxs)
+      foreach (HttpListenerContext ctx in ctxs)
         ctx.SendError (503);
     }
 
     private void cleanupContextRegistry ()
     {
-      var cnt = _contextRegistry.Count;
+            int cnt = _contextRegistry.Count;
 
       if (cnt == 0)
         return;
 
-      var ctxs = new HttpListenerContext[cnt];
+            HttpListenerContext[] ctxs = new HttpListenerContext[cnt];
 
       lock (_contextRegistrySync) {
         _contextRegistry.CopyTo (ctxs, 0);
         _contextRegistry.Clear ();
       }
 
-      foreach (var ctx in ctxs)
+      foreach (HttpListenerContext ctx in ctxs)
         ctx.Connection.Close (true);
     }
 
@@ -586,12 +586,12 @@ namespace WebSocketSharp.Net
       if (_waitQueue.Count == 0)
         return;
 
-      var aress = _waitQueue.ToArray ();
+            HttpListenerAsyncResult[] aress = _waitQueue.ToArray ();
 
       _waitQueue.Clear ();
 
-      foreach (var ares in aress) {
-        var ex = new HttpListenerException (995, message);
+      foreach (HttpListenerAsyncResult ares in aress) {
+                HttpListenerException ex = new HttpListenerException (995, message);
         ares.Complete (ex);
       }
     }
@@ -615,7 +615,7 @@ namespace WebSocketSharp.Net
         cleanupContextQueue (force);
         cleanupContextRegistry ();
 
-        var msg = "The listener is closed.";
+                string msg = "The listener is closed.";
         cleanupWaitQueue (msg);
 
         EndPointManager.RemoveListener (this);
@@ -626,7 +626,7 @@ namespace WebSocketSharp.Net
 
     private string getRealm ()
     {
-      var realm = _realm;
+            string realm = _realm;
 
       return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
@@ -650,7 +650,7 @@ namespace WebSocketSharp.Net
           return true;
         }
 
-        var ares = _waitQueue.Dequeue ();
+                HttpListenerAsyncResult ares = _waitQueue.Dequeue ();
         ares.Complete (context, false);
 
         return true;
@@ -661,7 +661,7 @@ namespace WebSocketSharp.Net
       HttpListenerRequest request
     )
     {
-      var selector = _authSchemeSelector;
+            Func<HttpListenerRequest, AuthenticationSchemes> selector = _authSchemeSelector;
 
       if (selector == null)
         return _authSchemes;
@@ -767,13 +767,13 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (_objectName);
 
       if (!_listening) {
-        var msg = "The listener has not been started.";
+                string msg = "The listener has not been started.";
 
         throw new InvalidOperationException (msg);
       }
 
       if (_prefixes.Count == 0) {
-        var msg = "The listener has no URI prefix on which listens.";
+                string msg = "The listener has no URI prefix on which listens.";
 
         throw new InvalidOperationException (msg);
       }
@@ -836,7 +836,7 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (_objectName);
 
       if (!_listening) {
-        var msg = "The listener has not been started.";
+                string msg = "The listener has not been started.";
 
         throw new InvalidOperationException (msg);
       }
@@ -844,17 +844,17 @@ namespace WebSocketSharp.Net
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
 
-      var ares = asyncResult as HttpListenerAsyncResult;
+            HttpListenerAsyncResult ares = asyncResult as HttpListenerAsyncResult;
 
       if (ares == null) {
-        var msg = "A wrong IAsyncResult instance.";
+                string msg = "A wrong IAsyncResult instance.";
 
         throw new ArgumentException (msg, "asyncResult");
       }
 
       lock (ares.SyncRoot) {
         if (ares.EndCalled) {
-          var msg = "This IAsyncResult instance cannot be reused.";
+                    string msg = "This IAsyncResult instance cannot be reused.";
 
           throw new InvalidOperationException (msg);
         }
@@ -901,18 +901,18 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (_objectName);
 
       if (!_listening) {
-        var msg = "The listener has not been started.";
+                string msg = "The listener has not been started.";
 
         throw new InvalidOperationException (msg);
       }
 
       if (_prefixes.Count == 0) {
-        var msg = "The listener has no URI prefix on which listens.";
+                string msg = "The listener has no URI prefix on which listens.";
 
         throw new InvalidOperationException (msg);
       }
 
-      var ares = beginGetContext (null, null);
+            HttpListenerAsyncResult ares = beginGetContext (null, null);
       ares.EndCalled = true;
 
       if (!ares.IsCompleted)
@@ -972,7 +972,7 @@ namespace WebSocketSharp.Net
         cleanupContextQueue (false);
         cleanupContextRegistry ();
 
-        var msg = "The listener is stopped.";
+                string msg = "The listener is stopped.";
         cleanupWaitQueue (msg);
 
         EndPointManager.RemoveListener (this);

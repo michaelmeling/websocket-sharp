@@ -85,10 +85,10 @@ namespace WebSocketSharp.Net
       if (encoding == null)
         encoding = Encoding.UTF8;
 
-      var ret = new QueryStringCollection ();
+            QueryStringCollection ret = new QueryStringCollection ();
 
-      foreach (var component in query.Split ('&')) {
-        var len = component.Length;
+      foreach (string component in query.Split ('&')) {
+                int len = component.Length;
 
         if (len == 0)
           continue;
@@ -99,7 +99,7 @@ namespace WebSocketSharp.Net
         string name = null;
         string val = null;
 
-        var idx = component.IndexOf ('=');
+                int idx = component.IndexOf ('=');
 
         if (idx < 0) {
           val = component.UrlDecode (encoding);
@@ -110,7 +110,7 @@ namespace WebSocketSharp.Net
         else {
           name = component.Substring (0, idx).UrlDecode (encoding);
 
-          var start = idx + 1;
+                    int start = idx + 1;
           val = start < len
                 ? component.Substring (start).UrlDecode (encoding)
                 : String.Empty;
@@ -124,9 +124,9 @@ namespace WebSocketSharp.Net
 
     public override string ToString ()
     {
-      var buff = new StringBuilder ();
+            StringBuilder buff = new StringBuilder ();
 
-      foreach (var key in AllKeys)
+      foreach (string key in AllKeys)
         buff.AppendFormat ("{0}={1}&", key, this[key]);
 
       if (buff.Length > 0)

@@ -129,7 +129,7 @@ namespace WebSocketSharp
         if (_length <= 2)
           return String.Empty;
 
-        var raw = _data.SubArray (2, _length - 2);
+                byte[] raw = _data.SubArray (2, _length - 2);
 
         string reason;
         return raw.TryGetUTF8DecodedString (out reason)
@@ -180,7 +180,7 @@ namespace WebSocketSharp
 
     public IEnumerator<byte> GetEnumerator ()
     {
-      foreach (var b in _data)
+      foreach (byte b in _data)
         yield return b;
     }
 

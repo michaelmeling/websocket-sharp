@@ -157,14 +157,14 @@ namespace WebSocketSharp.Net
     private void flushBody (bool closing)
     {
       using (_bodyBuffer) {
-        var len = _bodyBuffer.Length;
+                long len = _bodyBuffer.Length;
 
         if (len > Int32.MaxValue) {
           _bodyBuffer.Position = 0;
 
-          var buffLen = 1024;
-          var buff = new byte[buffLen];
-          var nread = 0;
+                    int buffLen = 1024;
+                    byte[] buff = new byte[buffLen];
+                    int nread = 0;
 
           while (true) {
             nread = _bodyBuffer.Read (buff, 0, buffLen);
@@ -198,19 +198,19 @@ namespace WebSocketSharp.Net
           return false;
       }
 
-      var statusLine = _response.StatusLine;
-      var headers = _response.FullHeaders;
+            string statusLine = _response.StatusLine;
+            WebHeaderCollection headers = _response.FullHeaders;
 
-      var buff = new MemoryStream ();
-      var enc = Encoding.UTF8;
+            MemoryStream buff = new MemoryStream ();
+            Encoding enc = Encoding.UTF8;
 
-      using (var writer = new StreamWriter (buff, enc, 256)) {
+      using (StreamWriter writer = new StreamWriter (buff, enc, 256)) {
         writer.Write (statusLine);
         writer.Write (headers.ToStringMultiValue (true));
         writer.Flush ();
 
-        var start = enc.GetPreamble ().Length;
-        var len = buff.Length - start;
+                int start = enc.GetPreamble ().Length;
+                long len = buff.Length - start;
 
         if (len > _maxHeadersLength)
           return false;
@@ -225,14 +225,14 @@ namespace WebSocketSharp.Net
 
     private static byte[] getChunkSizeBytes (int size)
     {
-      var chunkSize = String.Format ("{0:x}\r\n", size);
+            string chunkSize = String.Format ("{0:x}\r\n", size);
 
       return Encoding.ASCII.GetBytes (chunkSize);
     }
 
     private void writeChunked (byte[] buffer, int offset, int count)
     {
-      var size = getChunkSizeBytes (count);
+            byte[] size = getChunkSizeBytes (count);
 
       _innerStream.Write (size, 0, size.Length);
       _innerStream.Write (buffer, offset, count);
@@ -325,7 +325,7 @@ namespace WebSocketSharp.Net
     )
     {
       if (_disposed) {
-        var name = GetType ().ToString ();
+                string name = GetType ().ToString ();
 
         throw new ObjectDisposedException (name);
       }
@@ -351,7 +351,7 @@ namespace WebSocketSharp.Net
     public override void EndWrite (IAsyncResult asyncResult)
     {
       if (_disposed) {
-        var name = GetType ().ToString ();
+                string name = GetType ().ToString ();
 
         throw new ObjectDisposedException (name);
       }
@@ -364,7 +364,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      var sendChunked = _sendChunked || _response.SendChunked;
+            bool sendChunked = _sendChunked || _response.SendChunked;
 
       if (!sendChunked)
         return;
@@ -390,7 +390,7 @@ namespace WebSocketSharp.Net
     public override void Write (byte[] buffer, int offset, int count)
     {
       if (_disposed) {
-        var name = GetType ().ToString ();
+                string name = GetType ().ToString ();
 
         throw new ObjectDisposedException (name);
       }

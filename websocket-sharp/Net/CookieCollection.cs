@@ -84,7 +84,7 @@ namespace WebSocketSharp.Net
 
     internal IEnumerable<Cookie> Sorted {
       get {
-        var list = new List<Cookie> (_list);
+                List<Cookie> list = new List<Cookie> (_list);
         if (list.Count > 1)
           list.Sort (compareForSorted);
 
@@ -193,9 +193,9 @@ namespace WebSocketSharp.Net
         if (name == null)
           throw new ArgumentNullException ("name");
 
-        var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+                StringComparison caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
-        foreach (var cookie in Sorted) {
+        foreach (Cookie cookie in Sorted) {
           if (cookie.Name.Equals (name, caseInsensitive))
             return cookie;
         }
@@ -222,7 +222,7 @@ namespace WebSocketSharp.Net
 
     private void add (Cookie cookie)
     {
-      var idx = search (cookie);
+            int idx = search (cookie);
       if (idx == -1) {
         _list.Add (cookie);
         return;
@@ -239,7 +239,7 @@ namespace WebSocketSharp.Net
 
     private static int compareForSorted (Cookie x, Cookie y)
     {
-      var ret = x.Version - y.Version;
+            int ret = x.Version - y.Version;
       return ret != 0
              ? ret
              : (ret = x.Name.CompareTo (y.Name)) != 0
@@ -249,20 +249,20 @@ namespace WebSocketSharp.Net
 
     private static CookieCollection parseRequest (string value)
     {
-      var ret = new CookieCollection ();
+            CookieCollection ret = new CookieCollection ();
 
       Cookie cookie = null;
-      var ver = 0;
+            int ver = 0;
 
-      var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
-      var pairs = value.SplitHeaderValue (',', ';').ToList ();
+            StringComparison caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+            List<string> pairs = value.SplitHeaderValue (',', ';').ToList ();
 
-      for (var i = 0; i < pairs.Count; i++) {
-        var pair = pairs[i].Trim ();
+      for (int i = 0; i < pairs.Count; i++) {
+                string pair = pairs[i].Trim ();
         if (pair.Length == 0)
           continue;
 
-        var idx = pair.IndexOf ('=');
+                int idx = pair.IndexOf ('=');
         if (idx == -1) {
           if (cookie == null)
             continue;
@@ -284,8 +284,8 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        var name = pair.Substring (0, idx).TrimEnd (' ');
-        var val = idx < pair.Length - 1
+                string name = pair.Substring (0, idx).TrimEnd (' ');
+                string val = idx < pair.Length - 1
                   ? pair.Substring (idx + 1).TrimStart (' ')
                   : String.Empty;
 
@@ -352,19 +352,19 @@ namespace WebSocketSharp.Net
 
     private static CookieCollection parseResponse (string value)
     {
-      var ret = new CookieCollection ();
+            CookieCollection ret = new CookieCollection ();
 
       Cookie cookie = null;
 
-      var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
-      var pairs = value.SplitHeaderValue (',', ';').ToList ();
+            StringComparison caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+            List<string> pairs = value.SplitHeaderValue (',', ';').ToList ();
 
-      for (var i = 0; i < pairs.Count; i++) {
-        var pair = pairs[i].Trim ();
+      for (int i = 0; i < pairs.Count; i++) {
+                string pair = pairs[i].Trim ();
         if (pair.Length == 0)
           continue;
 
-        var idx = pair.IndexOf ('=');
+                int idx = pair.IndexOf ('=');
         if (idx == -1) {
           if (cookie == null)
             continue;
@@ -401,8 +401,8 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        var name = pair.Substring (0, idx).TrimEnd (' ');
-        var val = idx < pair.Length - 1
+                string name = pair.Substring (0, idx).TrimEnd (' ');
+                string val = idx < pair.Length - 1
                   ? pair.Substring (idx + 1).TrimStart (' ')
                   : String.Empty;
 
@@ -436,7 +436,7 @@ namespace WebSocketSharp.Net
           if (cookie.Expires != DateTime.MinValue)
             continue;
 
-          var buff = new StringBuilder (val, 32);
+                    StringBuilder buff = new StringBuilder (val, 32);
           buff.AppendFormat (", {0}", pairs[i].Trim ());
 
           DateTime expires;
@@ -551,7 +551,7 @@ namespace WebSocketSharp.Net
 
     private int search (Cookie cookie)
     {
-      for (var i = _list.Count - 1; i >= 0; i--) {
+      for (int i = _list.Count - 1; i >= 0; i--) {
         if (_list[i].EqualsWithoutValue (cookie))
           return i;
       }
@@ -590,7 +590,7 @@ namespace WebSocketSharp.Net
 
     internal void SetOrRemove (Cookie cookie)
     {
-      var idx = search (cookie);
+            int idx = search (cookie);
       if (idx == -1) {
         if (cookie.Expired)
           return;
@@ -609,7 +609,7 @@ namespace WebSocketSharp.Net
 
     internal void SetOrRemove (CookieCollection cookies)
     {
-      foreach (var cookie in cookies._list)
+      foreach (Cookie cookie in cookies._list)
         SetOrRemove (cookie);
     }
 
@@ -638,7 +638,7 @@ namespace WebSocketSharp.Net
     public void Add (Cookie cookie)
     {
       if (_readOnly) {
-        var msg = "The collection is read-only.";
+                string msg = "The collection is read-only.";
         throw new InvalidOperationException (msg);
       }
 
@@ -663,14 +663,14 @@ namespace WebSocketSharp.Net
     public void Add (CookieCollection cookies)
     {
       if (_readOnly) {
-        var msg = "The collection is read-only.";
+                string msg = "The collection is read-only.";
         throw new InvalidOperationException (msg);
       }
 
       if (cookies == null)
         throw new ArgumentNullException ("cookies");
 
-      foreach (var cookie in cookies._list)
+      foreach (Cookie cookie in cookies._list)
         add (cookie);
     }
 
@@ -683,7 +683,7 @@ namespace WebSocketSharp.Net
     public void Clear ()
     {
       if (_readOnly) {
-        var msg = "The collection is read-only.";
+                string msg = "The collection is read-only.";
         throw new InvalidOperationException (msg);
       }
 
@@ -742,7 +742,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentOutOfRangeException ("index", "Less than zero.");
 
       if (array.Length - index < _list.Count) {
-        var msg = "The available space of the array is not enough to copy to.";
+                string msg = "The available space of the array is not enough to copy to.";
         throw new ArgumentException (msg);
       }
 
@@ -785,14 +785,14 @@ namespace WebSocketSharp.Net
     public bool Remove (Cookie cookie)
     {
       if (_readOnly) {
-        var msg = "The collection is read-only.";
+                string msg = "The collection is read-only.";
         throw new InvalidOperationException (msg);
       }
 
       if (cookie == null)
         throw new ArgumentNullException ("cookie");
 
-      var idx = search (cookie);
+            int idx = search (cookie);
       if (idx == -1)
         return false;
 
