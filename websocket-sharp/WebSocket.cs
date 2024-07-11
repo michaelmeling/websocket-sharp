@@ -1617,7 +1617,6 @@ namespace WebSocketSharp
     {
       _inMessage = true;
 
-      startReceiving ();
 
       try
       {
@@ -1627,6 +1626,8 @@ namespace WebSocketSharp
         _logger.Error (ex.ToString ());
         error ("An error has occurred during the OnOpen event.", ex);
       }
+
+      startReceiving ();
 
       MessageEventArgs e = null;
       lock (_forMessageEventQueue) {
